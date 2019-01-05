@@ -2,7 +2,7 @@
 
 ## 0. Quick Guide
 
-If you are already experienced with using CMake to generate a C++ project, please read the following paragraphs for a quick guide. If not, you may read Section 2 and 3 first and then get back to check this section as a summary.
+If you are already experienced with using CMake to generate a C++ project, please read the following paragraphs for a quick guide. If not, you may read Section 1 and 2 first and then get back to check this section as a summary.
 
 ### Code Structure
 
@@ -68,7 +68,7 @@ If you use CMake UI on Windows, input the paths for the source code and the buil
 Attention:
 
 1. Typically, we set the source code path as `[Your path]/dartmouth-phys-comp-starter/proj/a0_hello_world` and the build path as `[Your path]/dartmouth-phys-comp-starter/build/a0_hello_world` ((see figure below)
-2. Select the right generator for the project. For example, select Visual Studio 15 2017 Win64 for Windows 64 and Visual Studio 15 2017 for Windows 32.
+2. Select a proper generator for the project. For example, select Visual Studio 15 2017 Win64 for Windows 64 and Visual Studio 15 2017 for Windows 32.
 
 ### Step 3: Compile the code
 
