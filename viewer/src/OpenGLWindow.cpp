@@ -5,7 +5,15 @@
 //#####################################################################
 #include "OpenGLWindow.h"
 #include <iostream>
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <GLUT/glut.h>
+#else
 #include <GL/freeglut.h>
+#endif
+
 #include "glm.hpp"
 #include "gtc/matrix_transform.hpp"
 #include "gtc/type_ptr.hpp"
@@ -123,7 +131,13 @@ void OpenGLWindow::Initialize_Window()
 	int argc=1;char* argv[1];argv[0]=(char*)(window_title.c_str());
 
 	glutInit(&argc,argv);
-	glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH|GLUT_ALPHA);
+    
+#ifdef __APPLE__
+    glutInitDisplayMode(GLUT_3_2_CORE_PROFILE|GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH|GLUT_ALPHA);
+#else
+    glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA|GLUT_DEPTH|GLUT_ALPHA);
+#endif
+    
 	glutInitWindowSize(win_w,win_h);
 	window_id=glutCreateWindow(window_title.c_str());
 
@@ -146,9 +160,12 @@ void OpenGLWindow::Initialize_OpenGL()
 	GLint minor_version;glGetIntegerv(GL_MINOR_VERSION,&minor_version);
 	std::cout<<"Opengl major version: "<<major_version<<", minor version: "<<minor_version<<std::endl;
 
+#ifndef __APPLE__
 	glutInitContextVersion(4,3);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
-	if(glewInit()){std::cerr<<"Error: [OpenGLWindow] Cannot initialize glew"<<std::endl;return;}
+#endif
+	
+    if(glewInit()){std::cerr<<"Error: [OpenGLWindow] Cannot initialize glew"<<std::endl;return;}
 
 	glEnable(GL_DEPTH_TEST);
 	glFrontFace(GL_CCW);
