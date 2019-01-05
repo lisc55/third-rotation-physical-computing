@@ -49,7 +49,7 @@ The simulation data is generated in the same folder as the executable. Typically
 
 **Substep 2.2: Generate the project**
 
-If you use command line, type the following based on your operating system: 
+If you use command line: 
 
 [Win64]:
 
