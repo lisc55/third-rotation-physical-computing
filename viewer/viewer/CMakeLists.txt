@@ -37,7 +37,27 @@ if(WIN32)
 	list(APPEND lib_files ${glew_libs})
 	set(glut_libs debug ${freeglut_lib_path}/freeglutd.lib optimized ${freeglut_lib_path}/freeglut.lib)
 	list(APPEND lib_files ${glut_libs})
-elseif(UNIX)#freeglut and glew are installed on linux by "sudo apt-get install freeglut3-dev libglew-dev"
+elseif(APPLE)  #freeglut and glew are installed on macos by "brew install freeglut glew"
+	find_package(GLEW REQUIRED)
+	if (GLEW_FOUND)
+    		include_directories(${GLEW_INCLUDE_DIRS})
+    		link_libraries(${GLEW_LIBRARIES})
+	endif()
+
+	find_package(GLUT REQUIRED)
+	if (GLUT_FOUND)
+    		include_directories(${GLUT_INCLUDE_DIRS})
+    		link_libraries(${GLUT_LIBRARIES})
+	endif()
+
+	find_package(OpenGL REQUIRED)
+    	include_directories(${OpenGL_INCLUDE_DIRS})
+    	link_directories(${OpenGL_LIBRARY_DIRS})
+    	add_definitions(${OpenGL_DEFINITIONS})
+
+	list(APPEND lib_files ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
+
+elseif(UNIX) #freeglut and glew are installed on linux by "sudo apt-get install freeglut3-dev libglew-dev"
 	set(GCC_COVERAGE_COMPILE_FLAGS "${GCC_COVERAGE_COMPILE_FLAGS} -lGL -lglut -lGLU -lGLEW")
 	set(GCC_COVERAGE_LINK_FLAGS "${GCC_COVERAGE_LINK_FLAGS} -lGL -lglut -lGLU -lGLEW")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_COVERAGE_COMPILE_FLAGS} ${GCC_COVERAGE_LINK_FLAGS}")

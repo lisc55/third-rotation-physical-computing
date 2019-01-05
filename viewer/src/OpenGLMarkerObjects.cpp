@@ -30,8 +30,12 @@ void OpenGLBackground::Initialize()
 	Array<Vector3> vtx={Vector3(box.min_corner[0],box.min_corner[1],depth),
 						Vector3(box.max_corner[0],box.min_corner[1],depth),
 						Vector3(box.max_corner[0],box.max_corner[1],depth),
+        
+                        Vector3(box.min_corner[0],box.min_corner[1],depth),
+                        Vector3(box.max_corner[0],box.max_corner[1],depth),
 						Vector3(box.min_corner[0],box.max_corner[1],depth)};
-	Array<Vector2> uv={Vector2((real)0.,(real)0.),Vector2((real)1.,(real)0.),Vector2((real)1.,(real)1.),Vector2((real)0.,(real)1.)};
+	Array<Vector2> uv={Vector2((real)0.,(real)0.),Vector2((real)1.,(real)0.),Vector2((real)1.,(real)1.),
+                       Vector2((real)0.,(real)0.),Vector2((real)1.,(real)1.),Vector2((real)0.,(real)1.)};
 
 	for(auto& p:vtx){
 		OpenGL_Vertex4(p,opengl_vertices);			////position, 4 floats
@@ -54,7 +58,7 @@ void OpenGLBackground::Display() const
 	glDepthMask(GL_FALSE);
 	shader->Set_Uniform_Vec4f("color",color.rgba);
 	glBindVertexArray(vao);
-	glDrawArrays(GL_QUADS,0,vtx_size/8);
+	glDrawArrays(GL_TRIANGLES,0,vtx_size/8);
 	glDepthMask(GL_TRUE);
 	shader->End();}
 }
