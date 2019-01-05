@@ -63,7 +63,7 @@ If you use command line:
 
     cmake ../../proj/a0_hello_world
 
-If you use CMake UI on Windows, input the paths for the source code and the build binaries, then click Configure, Generate, and Open Project. Typically, we set the source code path as `[Your path]/dartmouth-phys-comp-starter/proj/a0_hello_world` and the build path as `[Your path]/dartmouth-phys-comp-starter/build/a0_hello_world` ((see figure below). Also, after clicking Configue, select a proper generator for the project. For example, select Visual Studio 15 2017 Win64 for Windows 64 and Visual Studio 15 2017 for Windows 32.
+If you use CMake UI on Windows, input the paths for the source code and the build binaries, then click 'Configure', 'Generate', and 'Open Project'. Typically, we set the source code path as `[Your path]/dartmouth-phys-comp-starter/proj/a0_hello_world` and the build path as `[Your path]/dartmouth-phys-comp-starter/build/a0_hello_world` (see figure below). After clicking Configue, select a proper generator for the project. For example, select 'Visual Studio 15 2017 Win64' for Windows 64 or 'Visual Studio 15 2017' for Windows 32.
 
 ### Step 3: Compile the code
 
