@@ -26,7 +26,7 @@ The executables are generated in the Release or Debug folder under the subdirect
 
 The simulation data is generated in the same folder as the executable. Typically, we specify the argument –o for the folder name of each simulation (e.g., `build/a0_hello_world/Release/output`).
 
-## Compile and run the helloworld project:
+## 1. Compile and run the helloworld project:
 
 ### Step 1: Clone the source code from GitLab and enter the codebase folder
 
@@ -94,7 +94,7 @@ If the code runs correctly, you should see the following output in the terminal:
     [Particle] X(0): 1 1 1, V(0): 2 2 2
     [Triangle mesh] #vertices: 3, #triangles: 1
 
-## Compile and run the OpenGL viewer project
+## 2. Compile and run the OpenGL viewer project
 
 We provide executables for the OpenGL viewer in the repository. You may download and use them directly to visualize your simulation data.
 
