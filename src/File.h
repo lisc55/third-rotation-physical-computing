@@ -15,7 +15,7 @@
 #include <cstdio>
 #ifdef WIN32
 #include <windows.h>
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__APPLE__)
 #include <sys/stat.h>
 #endif
 
@@ -146,7 +146,7 @@ inline bool Create_Directory(const std::string& dirname)
                 std::cerr<<"Error: [File] Create directory "<<dirname<<" failed!"<<std::endl;return false;}}}while(pos!=std::string::npos);}
     return true;
 }
-#elif defined(__linux__)
+#elif defined(__linux__) || defined(__APPLE__)
 inline bool Directory_Exists(const char* dirname)
 {struct stat s;return stat(dirname,&s)==0;}
 
