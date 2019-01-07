@@ -88,6 +88,9 @@ If the code runs correctly, you should see the following output in the terminal:
     [Particle] #particles: 4
     [Particle] X(0): 1 1 1, V(0): 2 2 2
     [Triangle mesh] #vertices: 3, #triangles: 1
+    --- Test_IO ---
+    [Write_Binary_To_File] write x=1
+    [Read_Binary_To_File] read y=1
 
 ## 2. Compile and run the OpenGL viewer project
 
