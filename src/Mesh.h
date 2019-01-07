@@ -25,6 +25,7 @@ public:
 		if(_vertices==nullptr)vertices=std::make_shared<Array<VectorD> >();
 		else vertices=_vertices;
 	}
+
 	////Copy constructor
 	SimplicialMesh(const SimplicialMesh<d,e_d>& copy){*this=copy;}
 	SimplicialMesh<d,e_d>& operator=(const SimplicialMesh<d,e_d>& copy)

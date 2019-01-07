@@ -82,6 +82,67 @@ class OpenGLSegmentMesh : public OpenGLMesh<SegmentMesh<3> >
     }
 };
 
+class OpenGLColoredSegmentMesh : public OpenGLMesh<SegmentMesh<3> >
+{public:typedef OpenGLMesh<SegmentMesh<3> > Base;
+    OpenGLColoredSegmentMesh(){color=default_mesh_color;name="segment_mesh";}
+	Array<real> colors;
+	OpenGLColorMapper mapper;
+
+	virtual void Initialize()
+	{
+		Base::Initialize();
+
+		Array<float> v={-.2f,-.1f,0.f,.1f,.2f};
+		Array<OpenGLColor> c={OpenGLColor(0,0,.5),OpenGLColor(0,0,1),OpenGLColor(0,1,1),OpenGLColor(1,1,0),OpenGLColor(1,0,0)};
+		mapper.Initialize(v,c);
+	}
+
+	virtual void Update_Data_To_Render()
+	{
+		if(!Update_Data_To_Render_Pre())return;
+
+		if(colors.size()==0)for(auto& e:mesh.elements){
+			OpenGL_Vertex4_And_Color4(mesh.Vertices()[e[0]],color.rgba,opengl_vertices);
+			OpenGL_Vertex4_And_Color4(mesh.Vertices()[e[1]],color.rgba,opengl_vertices);}
+		else for(size_type i=0;i<mesh.elements.size();i++){Vector2i e=mesh.elements[i];
+			OpenGLColor c=mapper.Get((float)colors[i]);
+			OpenGL_Vertex4_And_Color4(mesh.Vertices()[e[0]],c.rgba,opengl_vertices);
+			OpenGL_Vertex4_And_Color4(mesh.Vertices()[e[1]],c.rgba,opengl_vertices);}
+
+		Set_OpenGL_Vertices();
+		Set_OpenGL_Vertex_Attribute(0,4,8,0);	////position
+		Set_OpenGL_Vertex_Attribute(1,4,8,4);	////color
+
+		Update_Data_To_Render_Post();
+	}
+
+	virtual void Display() const
+    {
+		if(!visible||mesh.elements.empty())return;
+		Update_Polygon_Mode();
+
+		GLfloat old_line_width;glGetFloatv(GL_LINE_WIDTH,&old_line_width);
+		{std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[0];
+		shader->Begin();
+		glLineWidth(line_width);
+		OpenGLUbos::Bind_Uniform_Block_To_Ubo(shader,"camera");
+		glBindVertexArray(vao);
+		glDrawElements(GL_LINES,ele_size,GL_UNSIGNED_INT,0);
+		glLineWidth(old_line_width);
+		glDrawArrays(GL_LINES,0,vtx_size/8);
+		shader->End();}
+    }
+
+	virtual void Refresh(const int frame)
+	{
+		Base::Refresh(frame);
+		std::string color_file_name=output_dir+"/"+std::to_string(frame)+"/"+name+"_color";
+		if(File::File_Exists(color_file_name)){
+			colors.clear();colors.resize(mesh.elements.size());
+			File::Read_Binary_Array_From_File(color_file_name,&colors[0],(int)mesh.elements.size());}
+	}
+};
+
 class OpenGLTriangleMesh : public OpenGLMesh<TriangleMesh<3> >
 {public:typedef OpenGLMesh<TriangleMesh<3> > Base;
 	std::shared_ptr<OpenGLFbos::OpenGLFbo> fbo;

@@ -12,17 +12,17 @@
 #include "Common.h"
 #include "File.h"
 
-#define Declare_Attribute(T_VAL,A,a,Rebind_A) \
-	public:T_VAL& A(const int i){return (*a)[i];}\
-	const T_VAL& A(const int i) const {return (*a)[i];}\
-	Array<T_VAL>* A(){return a.get();}\
-	const Array<T_VAL>* A() const {return a.get();}\
-	ArrayPtr<T_VAL> A##Ptr(){return a;}\
-	const ArrayPtr<T_VAL> A##Ptr() const {return a;}\
-	Array<T_VAL>& A##Ref(){return *a;}\
-	const Array<T_VAL>& A##Ref() const {return *a;}\
-	void Rebind_A(Array<T_VAL>* _a){assert(_a->size()==Size());a.reset(_a);}\
-    protected:ArrayPtr<T_VAL> a;public:
+#define Declare_Attribute(T,A,a,Rebind_A) \
+	public:T& A(const int i){return (*a)[i];}\
+	const T& A(const int i) const {return (*a)[i];}\
+	Array<T>* A(){return a.get();}\
+	const Array<T>* A() const {return a.get();}\
+	ArrayPtr<T> A##Ptr(){return a;}\
+	const ArrayPtr<T> A##Ptr() const {return a;}\
+	Array<T>& A##Ref(){return *a;}\
+	const Array<T>& A##Ref() const {return *a;}\
+	void Rebind_A(Array<T>* _a){assert(_a->size()==Size());a.reset(_a);}\
+    protected:ArrayPtr<T> a;public:
 
 template<int d> class Attributes
 {using VectorD=Vector<real,d>;
@@ -59,7 +59,7 @@ public:
 		for(auto& e:integer_attributes)e.second->resize(e.second->size()+n,0);
 	}
 
-	template<class T_VAL> using AttMapPair=Pair<std::string,ArrayPtr<T_VAL> >;
+	template<class T> using AttMapPair=Pair<std::string,ArrayPtr<T> >;
 
 	bool Add(const std::string name,ArrayPtr<VectorD>& val)
 	{vector_attributes.insert(AttMapPair<VectorD>(name,val));return true;}
@@ -147,9 +147,9 @@ public:
 	}
 
 protected:
-	template<class T_VAL> void Add_Attribute(const std::string name,ArrayPtr<T_VAL> & a)
+	template<class T> void Add_Attribute(const std::string name,ArrayPtr<T> & a)
 	{
-		if(a==nullptr)a.reset(new Array<T_VAL>());
+		if(a==nullptr)a.reset(new Array<T>());
 		attributes.Add(name,a);
 	}
 };

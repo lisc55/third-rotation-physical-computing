@@ -33,15 +33,15 @@ private:
     static std::ostream output;
     static std::istream input;
 
-    template<class T_VAL> static decltype(std::declval<T_VAL>().Write_Binary(output),std::true_type()) check_binary_write(int);
-    template<class T_VAL> static std::false_type check_binary_write(...);
-    template<class T_VAL> static decltype(std::declval<T_VAL>().Read_Binary(input),std::true_type()) check_binary_read(int);
-    template<class T_VAL> static std::false_type check_binary_read(...);
+    template<class T> static decltype(std::declval<T>().Write_Binary(output),std::true_type()) check_binary_write(int);
+    template<class T> static std::false_type check_binary_write(...);
+    template<class T> static decltype(std::declval<T>().Read_Binary(input),std::true_type()) check_binary_read(int);
+    template<class T> static std::false_type check_binary_read(...);
 
-    template<class T_VAL> static decltype(std::declval<T_VAL>().Write_Text(output),std::true_type()) check_text_write(int);
-    template<class T_VAL> static std::false_type check_text_write(...);
-    template<class T_VAL> static decltype(std::declval<T_VAL>().Read_Text(input),std::true_type()) check_text_read(int);
-    template<class T_VAL> static std::false_type check_text_read(...);
+    template<class T> static decltype(std::declval<T>().Write_Text(output),std::true_type()) check_text_write(int);
+    template<class T> static std::false_type check_text_write(...);
+    template<class T> static decltype(std::declval<T>().Read_Text(input),std::true_type()) check_text_read(int);
+    template<class T> static std::false_type check_text_read(...);
 public:
     static constexpr bool has_binary_write=std::is_same<decltype(check_binary_write<TYPE>(0)),std::true_type>::value;
     static constexpr bool has_binary_read=std::is_same<decltype(check_binary_read<TYPE>(0)),std::true_type>::value;
@@ -53,61 +53,61 @@ public:
 //////////////////////////////////////////////////////////////////////////
 ////Binary IO
 ////Write object without member function Write_Binary(output)
-template<class T_VAL> void Write_Binary(std::ostream& output,const T_VAL& data,typename std::enable_if<!CheckIOFunc<T_VAL>::has_binary_write>::type* =nullptr)
-{output.write(reinterpret_cast<const char*>(&data),sizeof(T_VAL));}
+template<class T> void Write_Binary(std::ostream& output,const T& data,typename std::enable_if<!CheckIOFunc<T>::has_binary_write>::type* =nullptr)
+{output.write(reinterpret_cast<const char*>(&data),sizeof(T));}
 
 ////Write object with member function Write_Binary(output)
-template<class T_VAL> void Write_Binary(std::ostream& output,const T_VAL& data,typename std::enable_if<CheckIOFunc<T_VAL>::has_binary_write>::type* =nullptr)
+template<class T> void Write_Binary(std::ostream& output,const T& data,typename std::enable_if<CheckIOFunc<T>::has_binary_write>::type* =nullptr)
 {data.Write_Binary(output);}
 
 ////Read object without member function Read_Binary(input)
-template<class T_VAL> void Read_Binary(std::istream& input,T_VAL& data,typename std::enable_if<!CheckIOFunc<T_VAL>::has_binary_read>::type* =nullptr)
-{input.read(reinterpret_cast<char*>(&data),sizeof(T_VAL));}
+template<class T> void Read_Binary(std::istream& input,T& data,typename std::enable_if<!CheckIOFunc<T>::has_binary_read>::type* =nullptr)
+{input.read(reinterpret_cast<char*>(&data),sizeof(T));}
 
 ////Read object with member function Read_Binary(input)
-template<class T_VAL> void Read_Binary(std::istream& input,T_VAL& data,typename std::enable_if<CheckIOFunc<T_VAL>::has_binary_read>::type* =nullptr)
+template<class T> void Read_Binary(std::istream& input,T& data,typename std::enable_if<CheckIOFunc<T>::has_binary_read>::type* =nullptr)
 {data.Read_Binary(input);}
 
-template<class T_VAL> void Write_Binary_Array(std::ostream& output,const T_VAL* array,const int n)
-{if(n>0)output.write(reinterpret_cast<const char*>(array),n*sizeof(T_VAL));}
+template<class T> void Write_Binary_Array(std::ostream& output,const T* array,const int n)
+{if(n>0)output.write(reinterpret_cast<const char*>(array),n*sizeof(T));}
 
-template<class T_VAL> void Read_Binary_Array(std::istream& input,T_VAL* array,const int n)
-{if(n>0)input.read(reinterpret_cast<char*>(array),n*sizeof(T_VAL));}
+template<class T> void Read_Binary_Array(std::istream& input,T* array,const int n)
+{if(n>0)input.read(reinterpret_cast<char*>(array),n*sizeof(T));}
 
-template<class T_VAL> bool Write_Binary_To_File(const std::string& file_name,const T_VAL& data)
+template<class T> bool Write_Binary_To_File(const std::string& file_name,const T& data)
 {std::ofstream output(file_name,std::ios::binary);if(!output)return false;Write_Binary(output,data);return true;}
 
-template<class T_VAL> bool Read_Binary_From_File(const std::string& file_name,T_VAL& data)
+template<class T> bool Read_Binary_From_File(const std::string& file_name,T& data)
 {std::ifstream input(file_name,std::ios::binary);if(!input)return false;Read_Binary(input,data);input.clear();input.close();return true;}
 
-template<class T_VAL> bool Write_Binary_Array_To_File(const std::string& file_name,T_VAL* array,const int n)
+template<class T> bool Write_Binary_Array_To_File(const std::string& file_name,T* array,const int n)
 {std::ofstream output(file_name,std::ios::binary);if(!output)return false;Write_Binary_Array(output,array,n);return true;}
 
-template<class T_VAL> bool Read_Binary_Array_From_File(const std::string& file_name,T_VAL* array,const int n)
+template<class T> bool Read_Binary_Array_From_File(const std::string& file_name,T* array,const int n)
 {std::ifstream input(file_name,std::ios::binary);if(!input)return false;Read_Binary_Array(input,array,n);input.clear();input.close();return true;}
 
-template<class T_VAL> bool Write(const std::string& file_name,const T_VAL& data)
+template<class T> bool Write(const std::string& file_name,const T& data)
 {return Write_Binary_To_File(file_name,data);}
 
-template<class T_VAL> bool Read(const std::string& file_name,T_VAL& data)
+template<class T> bool Read(const std::string& file_name,T& data)
 {return Read_Binary_From_File(file_name,data);}
 
 //////////////////////////////////////////////////////////////////////////
 ////Text IO
 ////Write object without member function Write_Text(output)
-template<class T_VAL> void Write_Text(std::ostream& output,const T_VAL& data,typename std::enable_if<!CheckIOFunc<T_VAL>::has_text_write>::type* =nullptr)
+template<class T> void Write_Text(std::ostream& output,const T& data,typename std::enable_if<!CheckIOFunc<T>::has_text_write>::type* =nullptr)
 {output<<data;}
 
 ////Write object with member function Write_Text(output)
-template<class T_VAL> void Write_Text(std::ostream& output,const T_VAL& data,typename std::enable_if<CheckIOFunc<T_VAL>::has_text_write>::type* =nullptr)
+template<class T> void Write_Text(std::ostream& output,const T& data,typename std::enable_if<CheckIOFunc<T>::has_text_write>::type* =nullptr)
 {data.Write_Text(output);}
 
 ////Read object without member function Read_Text(input)
-template<class T_VAL> void Read_Text(std::istream& input,T_VAL& data,typename std::enable_if<!CheckIOFunc<T_VAL>::has_text_read>::type* =nullptr)
+template<class T> void Read_Text(std::istream& input,T& data,typename std::enable_if<!CheckIOFunc<T>::has_text_read>::type* =nullptr)
 {input>>data;}
 
 ////Read object with member function Read_Text(input)
-template<class T_VAL> void Read_Text(std::istream& input,T_VAL& data,typename std::enable_if<CheckIOFunc<T_VAL>::has_text_read>::type* =nullptr)
+template<class T> void Read_Text(std::istream& input,T& data,typename std::enable_if<CheckIOFunc<T>::has_text_read>::type* =nullptr)
 {data.Read_Text(input);}
 
 template<class T_ARRAY> void Write_Text_Array(std::ostream& output,const T_ARRAY& array,const int n,char separator='\n')
@@ -116,19 +116,19 @@ template<class T_ARRAY> void Write_Text_Array(std::ostream& output,const T_ARRAY
 template<class T_ARRAY> void Read_Text_Array(std::istream& input,T_ARRAY& array,const int n,char separator='\n')
 {for(int i=0;i<n;i++)input>>array[i];}
 
-template<class T_VAL> bool Write_Text_To_File(const std::string& file_name,const T_VAL& data)
+template<class T> bool Write_Text_To_File(const std::string& file_name,const T& data)
 {std::ofstream output(file_name);if(!output)return false;Write_Text(output,data);return true;}
 
-template<class T_VAL> bool Read_Text_From_File(const std::string& file_name,T_VAL& data)
+template<class T> bool Read_Text_From_File(const std::string& file_name,T& data)
 {std::ifstream input(file_name);if(!input)return false;Read_Text(input,data);return true;}
 
-template<class T_VAL> bool Write_Text_Array_To_File(const std::string& file_name,const T_VAL& array,const int n,char separator='\n')
+template<class T> bool Write_Text_Array_To_File(const std::string& file_name,const T& array,const int n,char separator='\n')
 {std::ofstream output(file_name);if(!output)return false;Write_Text_Array(output,array,n,separator);return true;}
 
 template<class T_ARRAY> bool Read_Text_Array_From_File(const std::string& file_name,T_ARRAY& array,const int n)
 {std::ifstream input(file_name);if(!input)return false;Read_Text_Array(input,array,n);return true;}
 
-template<class T_VAL> bool Append_Text_To_File(const std::string& file_name,const T_VAL& data)
+template<class T> bool Append_Text_To_File(const std::string& file_name,const T& data)
 {std::ofstream output(file_name,std::ios_base::app);if(!output)return false;Write_Text(output,data);return true;}
 
 //////////////////////////////////////////////////////////////////////////

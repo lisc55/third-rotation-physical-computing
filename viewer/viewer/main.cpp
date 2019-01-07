@@ -20,6 +20,7 @@ int main(int argc,char* argv[])
 	viewer->use_2d_display=false;
 
 	viewer->Initialize();
+	viewer->Set_Offscreen_Output_Dir(output_dir+"/_images");
 	viewer->Run();
 	viewer->Finish();
 

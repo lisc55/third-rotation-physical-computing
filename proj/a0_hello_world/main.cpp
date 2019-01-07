@@ -6,6 +6,7 @@
 #include "Common.h"
 #include "Particles.h"
 #include "Mesh.h"
+#include "File.h"
 
 void Test_Eigen()
 {
@@ -46,10 +47,25 @@ void Test_Particles_And_Mesh()
     std::cout<<"[Triangle mesh] #vertices: "<<triangle_mesh.Vertices().size()<<", #triangles: "<<triangle_mesh.Elements().size()<<std::endl;
 }
 
+void Test_IO()
+{
+	std::cout<<"--- Test_IO ---"<<std::endl;
+	int x=1;
+	if(!File::Directory_Exists("test_folder")){
+		File::Create_Directory("test_folder");}
+	std::string file_name="test_folder/test";
+	File::Write_Binary_To_File(file_name,x);
+	int y=0;
+	File::Read_Binary_From_File(file_name,y);
+	std::cout<<"[Write_Binary_To_File] write x="<<x<<std::endl;
+	std::cout<<"[Read_Binary_To_File] read y="<<y<<std::endl;
+}
+
 int main()
 {
     Test_Eigen();
     Test_Particles_And_Mesh();
+	Test_IO();
 
     return 0;
 }

@@ -20,8 +20,8 @@
 ////Eigen basic types
 
 ////Eigen vector type alias
-template<class T_VAL,int d> using Vector=Eigen::Matrix<T_VAL,d,1>;
-template<class T_VAL,int d> using Matrix=Eigen::Matrix<T_VAL,d,d>;
+template<class T,int d> using Vector=Eigen::Matrix<T,d,1>;
+template<class T,int d> using Matrix=Eigen::Matrix<T,d,d>;
 
 #define Declare_Eigen_Vector_Types(type,t)		\
 using Vector1##t=Eigen::Matrix<type,1,1>;       \
@@ -45,8 +45,8 @@ Declare_Eigen_Matrix_Types(float,f)
 Declare_Eigen_Matrix_Types(double,d)
 
 #define Declare_Eigen_Types(type,t)     \
-using real=type;                           \
-using Vector1=Eigen::Matrix<real,1,1>;     \
+using real=type;						\
+using Vector1=Eigen::Matrix<real,1,1>;	\
 using Vector2=Eigen::Vector2##t;        \
 using Vector3=Eigen::Vector3##t;        \
 using Vector4=Eigen::Vector4##t;        \
@@ -65,28 +65,28 @@ Declare_Eigen_Types(double,d)
 #endif
 
 ////Eigen vector alias macros
-#define Typedef_VectorD(d) \
+#define Typedef_VectorD(d)		\
 using VectorD=Vector<real,d>
-#define Typedef_VectorDi(d) \
+#define Typedef_VectorDi(d)		\
 using VectorDi=Vector<int,d>
-#define Typedef_VectorDii(d) \
-using VectorD=Vector<real,d>; \
+#define Typedef_VectorDii(d)	\
+using VectorD=Vector<real,d>;	\
 using VectorDi=Vector<int,d>;
-#define Typedef_VectorEi(d) \
+#define Typedef_VectorEi(d)		\
 
 //////////////////////////////////////////////////////////////////////////
 ////Eigen sparse
-template<class T_VAL> using VectorN=Eigen::Matrix<T_VAL,-1,1>;
-template<class T_VAL,int d> using Matrix=Eigen::Matrix<T_VAL,d,d>;
-template<class T_VAL> using SparseMatrix=Eigen::SparseMatrix<T_VAL,Eigen::RowMajor,int>;
+template<class T> using VectorN=Eigen::Matrix<T,-1,1>;
+template<class T,int d> using Matrix=Eigen::Matrix<T,d,d>;
+template<class T> using SparseMatrix=Eigen::SparseMatrix<T,Eigen::RowMajor,int>;
 using SparseMatrixT=SparseMatrix<real>;
-template<class T_VAL> using InnerIterator=typename SparseMatrix<T_VAL>::InnerIterator;
+template<class T> using InnerIterator=typename SparseMatrix<T>::InnerIterator;
 using InnerIteratorT=SparseMatrixT::InnerIterator;
-template<class T_VAL> using DiagonalMatrix=Eigen::DiagonalMatrix<T_VAL,Eigen::Dynamic,Eigen::Dynamic>;
+template<class T> using DiagonalMatrix=Eigen::DiagonalMatrix<T,Eigen::Dynamic,Eigen::Dynamic>;
 using DiagonalMatrixT=Eigen::DiagonalMatrix<real,Eigen::Dynamic,Eigen::Dynamic>;
-template<class T_VAL> using Triplet=Eigen::Triplet<T_VAL,int>;
+template<class T> using Triplet=Eigen::Triplet<T,int>;
 using TripletT=Triplet<real>;
-template<class T_VAL> using IncompleteCholesky=Eigen::IncompleteCholesky<T_VAL>;
+template<class T> using IncompleteCholesky=Eigen::IncompleteCholesky<T>;
 
 ////Eigen sparse matrix helper functions
 namespace SparseFunc{
@@ -148,26 +148,26 @@ namespace SparseSolver{
 //////////////////////////////////////////////////////////////////////////
 ////Container alias
 
-template<class T_VAL> using Array=std::vector<T_VAL>;
-template<class T_VAL> using List=std::list<T_VAL>;
-template<class T_VAL,class CMP=std::less<T_VAL> > using Heap=std::priority_queue<T_VAL,std::vector<T_VAL>,CMP>;
-template<class T_KEY,class T_VAL> using Hashtable=std::unordered_map<T_KEY,T_VAL>;
-template<class T_KEY,class T_VAL> using HashtableMultiValue=std::unordered_multimap<T_KEY,T_VAL>;
+template<class T> using Array=std::vector<T>;
+template<class T> using List=std::list<T>;
+template<class T,class CMP=std::less<T> > using Heap=std::priority_queue<T,std::vector<T>,CMP>;
+template<class T_KEY,class T> using Hashtable=std::unordered_map<T_KEY,T>;
+template<class T_KEY,class T> using HashtableMultiValue=std::unordered_multimap<T_KEY,T>;
 template<class T_KEY> using Hashset=std::unordered_set<T_KEY>;
 
 template<class T1,class T2> using Pair=std::pair<T1,T2>;
-template<class T_VAL> using ArrayPtr=std::shared_ptr<Array<T_VAL> >;
+template<class T> using ArrayPtr=std::shared_ptr<Array<T> >;
 
 using size_type=Array<int>::size_type;
 using uchar=unsigned char;
 using ushort=unsigned short;
 
 ////Array with fixed size
-template<class T_VAL,int n> using ArrayF=std::array<T_VAL,n>;
+template<class T,int n> using ArrayF=std::array<T,n>;
 constexpr int Pow(int x,int p){return p==1?x:x*Pow(x,p-1);}
 constexpr int Factorial(int n){return n<=1?1:(n*Factorial(n-1));}
-template<class T_VAL,int d> using ArrayF2P=ArrayF<T_VAL,Pow(2,d) >;
-template<class T_VAL,int d> using ArrayF3P=ArrayF<T_VAL,Pow(3,d) >;
+template<class T,int d> using ArrayF2P=ArrayF<T,Pow(2,d) >;
+template<class T,int d> using ArrayF3P=ArrayF<T,Pow(3,d) >;
 
 //////////////////////////////////////////////////////////////////////////
 ////Analytical geometry
@@ -190,17 +190,17 @@ public:
 //////////////////////////////////////////////////////////////////////////
 ////Dimension conversion
 
-template<class T_VAL,int d1,int d2> void Dim_Conversion(const Vector<T_VAL,d1>& input,/*result*/Vector<T_VAL,d2>& output,const T_VAL filled_value=(T_VAL)0)
+template<class T,int d1,int d2> void Dim_Conversion(const Vector<T,d1>& input,/*result*/Vector<T,d2>& output,const T filled_value=(T)0)
 {
 	int n=d1<d2?d1:d2;
 	for(int i=0;i<n;i++)output[i]=input[i];
 	for(int i=n;i<d2;i++)output[i]=filled_value;
 }
 
-template<class T_VAL,int d1,int d2> void Dim_Conversion_Array(const Array<Vector<T_VAL,d1> >& input,/*result*/Array<Vector<T_VAL,d2> >& output,const T_VAL filled_value=(T_VAL)0)
+template<class T,int d1,int d2> void Dim_Conversion_Array(const Array<Vector<T,d1> >& input,/*result*/Array<Vector<T,d2> >& output,const T filled_value=(T)0)
 {
 	for(size_type i=0;i<input.size();i++){
-		Dim_Conversion<T_VAL,d1,d2>(input[i],output[i],filled_value);}
+		Dim_Conversion<T,d1,d2>(input[i],output[i],filled_value);}
 }
 
 #endif

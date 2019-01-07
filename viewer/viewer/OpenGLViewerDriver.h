@@ -37,8 +37,8 @@ public:
 			tri->mat.mat_dif=glm::vec4(.1f,0.3f,1.f,1.f);
 			tri->mat.mat_spec=glm::vec4(.1f,0.3f,1.f,1.f);}
 		
-		////draw segment mesh, for 2d simulation only
-		auto seg=Add_Object<OpenGLSegmentMesh>("segment_mesh");
+		////draw segment mesh
+		auto seg=Add_Object<OpenGLColoredSegmentMesh>("segment_mesh");
 		Set_Visibility(seg,'s',true);
 		Set_Color(seg,OpenGLColor::Red());
 

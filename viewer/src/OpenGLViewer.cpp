@@ -5,12 +5,14 @@
 //#####################################################################
 #include "Mesh.h"
 #include "File.h"
-//#include "AuxFunc.h"
 #include "OpenGLWindow.h"
 #include "OpenGLViewer.h"
 #include "OpenGLMesh.h"
 #include "OpenGLMarkerObjects.h"
 
+#ifdef USE_IMGUI
+#include "OpenGLUiImgui.h"
+#endif
 //////////////////////////////////////////////////////////////////////////
 ////Initialization and run
 

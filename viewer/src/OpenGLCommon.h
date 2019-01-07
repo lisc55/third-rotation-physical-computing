@@ -26,10 +26,10 @@ class OpenGLColor
 public:
     float rgba[4];
 
-    explicit OpenGLColor(const float red=0,const float green=0,const float blue=0,const float alpha=1)
+    OpenGLColor(const float red=0,const float green=0,const float blue=0,const float alpha=1)
     {rgba[0]=red;rgba[1]=green;rgba[2]=blue;rgba[3]=alpha;}
 
-	explicit OpenGLColor(const ArrayF<float,4>& _rgba)
+	OpenGLColor(const ArrayF<float,4>& _rgba)
 	{rgba[0]=_rgba[0];rgba[1]=_rgba[1];rgba[2]=_rgba[2];rgba[3]=_rgba[3];}
 
     static OpenGLColor Red(){return OpenGLColor(1,0,0,1);}
@@ -38,6 +38,30 @@ public:
     static OpenGLColor Yellow(){return OpenGLColor(1,1,0,1);}
     static OpenGLColor White(){return OpenGLColor(1,1,1);}
     static OpenGLColor Black(){return OpenGLColor(0,0,0);}
+};
+
+class OpenGLColorMapper
+{
+public:
+	Array<float> values;
+	Array<OpenGLColor> colors;
+
+	void Initialize(const Array<float>& _values,const Array<OpenGLColor>& _colors){values=_values;colors=_colors;}
+
+	OpenGLColor Get(float x)
+	{
+		int n=(int)values.size();
+		if(x<values[0])return colors[0];
+		else if(x>=values[n-1])return colors[n-1];
+		else{
+			for(int i=0;i<n-1;i++){
+				if(x>=values[i]&&x<values[i+1]){
+					float c=(x-values[i])/(values[i+1]-values[i]);
+					OpenGLColor color;
+					for(int j=0;j<4;j++)color.rgba[j]=(1.f-c)*colors[i].rgba[j]+c*colors[i+1].rgba[j];
+					return color;}}
+			return colors[n-1];}
+	}
 };
 
 ////OpenGL pipeline commands

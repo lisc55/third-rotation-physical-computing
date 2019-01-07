@@ -6,6 +6,9 @@
 #include <iostream>
 #include "OpenGLWindow.h"
 #include "OpenGLBufferObjects.h"
+#ifdef USE_STB
+#include "StbImage.h"
+#endif
 
 namespace OpenGLFbos{
 void OpenGLFboInstance::Initialize(const std::string& _name,GLuint _width,GLuint _height)

@@ -4,6 +4,10 @@ cmake_minimum_required(VERSION 2.8.7)
 set(proj_name opengl_viewer)
 project(${proj_name})
 
+# compiling options
+set(USE_IMGUI OFF)
+set(USE_STB ON)
+
 #set paths
 if(NOT proj_path)
 	set(proj_src_path ${PROJECT_SOURCE_DIR})
@@ -68,12 +72,23 @@ endif(WIN32)
 if(USE_IMGUI)
 	set(imgui_path ${root_path}/viewer/ext/imgui)
 	file(GLOB_RECURSE imgui_cpp ${imgui_path}/*.cpp)
-	file(GLOB_RECURSE imgui_h ${imgui_h}/*.h)
+	file(GLOB_RECURSE imgui_h ${imgui_path}/*.h)
 	list(APPEND src_files ${imgui_cpp} ${imgui_h})
-	source_group("imgui" FILES ${imgui_cpp} ${imgui_h})
+	source_group("viewer-ext-imgui" FILES ${imgui_cpp} ${imgui_h})
 	include_directories(${imgui_path})
 	add_definitions(-DUSE_IMGUI)
 endif(USE_IMGUI)
+
+#include STB
+if(USE_STB)
+	set(stb_path ${root_path}/viewer/ext/stb)
+	file(GLOB_RECURSE stb_cpp ${stb_path}/*.cpp)
+	file(GLOB_RECURSE stb_h ${stb_path}/*.h)
+	list(APPEND src_files ${stb_cpp} ${stb_h})
+	source_group("viewer-ext-stb" FILES ${stb_cpp} ${stb_h})
+	include_directories(${stb_path})
+	add_definitions(-DUSE_STB)
+endif(USE_STB)
 	
 #include hearder and source files in /viewer/src
 file(GLOB_RECURSE viewer_src_cpp ${root_path}/viewer/src/*.cpp)
