@@ -42,15 +42,6 @@ public:
 		Set_Visibility(seg,'s',true);
 		Set_Color(seg,OpenGLColor::Red());
 
-
-		////draw the same triangle mesh by with wireframe rendering
-		auto tri2=Add_Object<OpenGLTriangleMesh>("triangle_mesh");
-		Set_Polygon_Mode(tri2,PolygonMode::Wireframe);
-		Set_Shading_Mode(tri2,ShadingMode::None);
-		Set_Visibility(tri2,'w',true);
-		Set_Color(tri2,OpenGLColor(.2f,0.8f,0.2f));
-		Set_Line_Width(tri2,4.f);
-
 		////set lights
 		auto dir_light=OpenGLUbos::Add_Directional_Light(glm::vec3(-1.f,-.1f,-.2f));
 		OpenGLUbos::Set_Ambient(glm::vec4(.1f,.1f,.1f,1.f));
