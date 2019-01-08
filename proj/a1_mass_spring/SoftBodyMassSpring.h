@@ -25,7 +25,7 @@ public:
 	////Body force
 	VectorD g=VectorD::Unit(1)*(real)-1.;
 	
-	enum class TimeIntegration{ExplicitEuler,ImplicitEuler} time_integration=TimeIntegration::ExplicitEuler;
+	enum class TimeIntegration{ExplicitEuler,ImplicitEuler} time_integration=TimeIntegration::ImplicitEuler;
 
 	////Implicit time integration
 	SparseMatrixT K;
@@ -64,7 +64,7 @@ public:
 		case TimeIntegration::ExplicitEuler:
 			Advance_Explicit_Euler(dt);break;
 		case TimeIntegration::ImplicitEuler:
-			Advance_Implicit(dt);break;}
+			Advance_Implicit_Euler(dt);break;}
 	}
 	
 	////Set boundary nodes
@@ -88,7 +88,7 @@ public:
 	////YOUR IMPLEMENTATION (P1 TASK): explicit Euler time integration 
 	void Advance_Explicit_Euler(const real dt)
 	{
-		Update_Forces_And_Boundary_Conditions();
+		Particle_Force_Accumulation();
 
 		////Update particle velocity and position
 		/* Your implementation start */
@@ -98,7 +98,7 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	////YOUR IMPLEMENTATION (P1 TASK): compute spring force f_ij=f_s+f_d 
-	VectorD Spring_Force(const int s_idx)
+	VectorD Spring_Force_Calculation(const int idx)
 	{
 		/* Your implementation start */
 
@@ -109,7 +109,7 @@ public:
 
 	//////////////////////////////////////////////////////////////////////////
 	////YOUR IMPLEMENTATION (P1 TASK): accumulate spring forces to particles
-	void Update_Forces_And_Boundary_Conditions()
+	void Particle_Force_Accumulation()
 	{
 		////Clear forces on particles
 		for(int i=0;i<particles.Size();i++){particles.F(i)=VectorD::Zero();}
@@ -182,9 +182,9 @@ public:
 	}
 
 	////Implicit Euler time integration
-	void Advance_Implicit(const real dt)
+	void Advance_Implicit_Euler(const real dt)
 	{
-		Update_Forces_And_Boundary_Conditions();
+		Particle_Force_Accumulation();
 		Update_Implicit_K_And_b(dt);
 
 		for(int i=0;i<particles.Size();i++){
