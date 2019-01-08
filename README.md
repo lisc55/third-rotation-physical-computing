@@ -30,7 +30,7 @@ The simulation data is generated in the same folder as the executable. Typically
 
 ### Step 1: Clone the source code from GitLab and enter the codebase folder
 
-    git clone git@gitlab.com:boolzhu/dartmouth-phys-comp-starter.git
+    git clone https://gitlab.com/boolzhu/dartmouth-phys-comp-starter
     cd dartmouth-phys-comp-starter
 
 ### Step 2: Build the project using CMake:
