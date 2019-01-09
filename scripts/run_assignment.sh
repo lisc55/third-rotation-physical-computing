@@ -1,7 +1,5 @@
 set -e
 
-command -v ffmpeg >/dev/null 2>&1 || { echo >&2 "ffmpeg required but it's not installed."; exit 1; }
-
 if [ -z "$1" ]
 then
 	echo >&2 "No assignment given.";
@@ -17,4 +15,4 @@ cmake --build ./build --config Release --target $assignment_name
 
 ./viewer/bin/linux/opengl_viewer -o build/proj/$assignment_name/output
 
-ffmpeg -start_number 0 -framerate 50 -i build/proj/$assignment_name/output/_images/%04d.png  -vcodec libx264 -crf 25 -pix_fmt yuv420p -y $assignment_name.mp4
+command -v ffmpeg >/dev/null 2>&1 && ffmpeg -start_number 0 -framerate 50 -i build/proj/$assignment_name/output/_images/%04d.png  -vcodec libx264 -crf 25 -pix_fmt yuv420p -y $assignment_name.mp4

@@ -43,22 +43,23 @@ The simulation data is generated in the same folder as the executable. Typically
 
 **Substep 2.1: Run setup.sh/bat**
 
-    ./setup.bat [Windows]
-    ./setup.sh [Linux/Mac]
+    .\scripts\setup.bat [Windows]
+    ./scripts/setup.sh [Linux/Mac]
 
 ### Step 3: Compile and run the code
 
 To test if everything works correctly you can run:
 
-    ./run_assignment.bat a1_mass_spring [Windows]
-    ./run_assignment.sh a1_mass_spring [Linux/Mac]
+    .\scripts\run_assignment.bat a0_hello_world [Windows]
+    ./scripts/run_assignment.sh a0_hello_world [Linux/Mac]
 
 This will:
 
 - Compile the code for the hello world project and any dependencies
 - Run the assignment and generate simulation data
 - Open the viewer load the data that was just generated
-- Render a video of the simulation once the viewer is closed.
+	- In the viewer you can press `w` to start recording and `p` to play back the animation
+- If you recorded anything and ffmpeg is installed, it will render a video of the simulation once the viewer is closed. This is saved under "assignment name".mp4
 
 ### Step 4: Start implementing!
 
