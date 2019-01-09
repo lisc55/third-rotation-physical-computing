@@ -41,56 +41,29 @@ The simulation data is generated in the same folder as the executable. Typically
 - **Linux**: `sudo apt-get install cmake`
 - **OSX**: `brew install cmake` (using [Homebrew](https://brew.sh/))
 
-**Substep 2.1: Create a build folder and a project subfolder in the codebase directory**
+**Substep 2.1: Run setup.sh/bat**
 
-    mkdir build\a0_hello_world
-    cd build\a0_hello_world
+    ./setup.bat [Windows]
+    ./setup.sh [Linux/Mac]
 
+### Step 3: Compile and run the code
 
-**Substep 2.2: Generate the project**
+To test if everything works correctly you can run:
 
-If you use command line: 
+    ./run_assignment.bat a1_mass_spring [Windows]
+    ./run_assignment.sh a1_mass_spring [Linux/Mac]
 
-[Win64]:
+This will:
 
-    cmake -G "Visual Studio 15 2017 Win64" ../../proj/a0_hello_world
+- Compile the code for the hello world project and any dependencies
+- Run the assignment and generate simulation data
+- Open the viewer load the data that was just generated
+- Render a video of the simulation once the viewer is closed.
 
-[Win32]:
+### Step 4: Start implementing!
 
-    cmake -G "Visual Studio 15 2017" ../../proj/a0_hello_world
-
-[Linux or OSX]:
-
-    cmake ../../proj/a0_hello_world
-
-If you use CMake UI on Windows, input the paths for the source code and the build binaries, then click `Configure`, `Generate`, and `Open Project`. Typically, we set the source code path as `[Your path]/dartmouth-phys-comp-starter/proj/a0_hello_world` and the build path as `[Your path]/dartmouth-phys-comp-starter/build/a0_hello_world` (see figure below). After clicking Configue, select a proper generator for the project. For example, select `Visual Studio 15 2017 Win64` for Windows 64 or `Visual Studio 15 2017` for Windows 32.
-
-### Step 3: Compile the code
-
-- **Windows**: Open the .sln project file, switch to Release mode, and click Build->Build Solution
-- **Linux or OSX**: `make`
-
-If the code is compiled successfully, you will see an executable generated in the Release folder
-
-### Step 4: Run the code:
-
-    cd Release
-    [Windows]: hello_world.exe
-    [Linux,OSX]: ./hello_world
-
-If the code runs correctly, you should see the following output in the terminal: 
-
-    --- Test_Eigen ---
-    v: 1 2 3, 1 2
-    vi: 1 2 3, vt: 1 2 3
-    1, 2, 3, 4, 5,
-    --- Test_Particles_And_Mesh ---
-    [Particle] #particles: 4
-    [Particle] X(0): 1 1 1, V(0): 2 2 2
-    [Triangle mesh] #vertices: 3, #triangles: 1
-    --- Test_IO ---
-    [Write_Binary_To_File] write x=1
-    [Read_Binary_To_File] read y=1
+- **Windows**: Open the .sln project file in the `build` folder.
+- **Linux or OSX**: Use your editor of choice to edit the assignment files in `proj`
 
 ## 2. Compile and run the OpenGL viewer project
 
