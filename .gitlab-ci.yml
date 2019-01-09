@@ -3,9 +3,9 @@ image: gcc
 
 before_script:
     # Install build dependencies
-    - apt-get update && apt-get -y install cmake
+    - apt-get update && apt-get -y install cmake freeglut3-dev libglew-dev
 
-myapp:
+phys-comp-all:
     # Build the application
     stage: build
     script:
