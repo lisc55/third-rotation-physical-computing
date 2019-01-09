@@ -134,7 +134,7 @@ void Test_Template()
 	}
 }
 
-void main()
+int main()
 {
 	std::cout<<"COSC 89.18/189.02: C++11 and Eigen tutorial!"<<std::endl;
 	Test_Vector();
