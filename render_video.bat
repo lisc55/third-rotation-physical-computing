@@ -1,0 +1,1 @@
+tools\ffmpeg.exe -start_number 0 -framerate 50 -i %1\%%04d.png  -vcodec libx264 -crf 25 -pix_fmt yuv420p -y %2.mp4
