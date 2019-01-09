@@ -1,1 +1,0 @@
-viewer\bin\windows\opengl_viewer.exe -o %1

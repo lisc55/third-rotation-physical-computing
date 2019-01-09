@@ -9,10 +9,10 @@ if not %ERRORLEVEL% == 0 goto :error
 build\proj\%assignment%\Release\%assignment_name%.exe -o build\proj\%assignment_name%\output
 if not %ERRORLEVEL% == 0 goto :error
 
-call run_viewer.bat build\proj\%assignment_name%\output
+viewer\bin\windows\opengl_viewer.exe -o build\proj\%assignment_name%\output
 if not %ERRORLEVEL% == 0 goto :error
 
-call render_video.bat build\proj\%assignment_name%\output\_images %assignment_name%
+tools\ffmpeg.exe -start_number 0 -framerate 50 -i build\proj\%assignment_name%\output\_images\%%04d.png  -vcodec libx264 -crf 25 -pix_fmt yuv420p -y %assignment_name%.mp4
 if not %ERRORLEVEL% == 0 goto :error
 
 start %assignment_name%.mp4
