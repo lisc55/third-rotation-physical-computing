@@ -75,3 +75,13 @@ You may also want to compile the source code if you are interested in customizin
 Once the viewer is compiled successfully, you will find the executable under the folder of `build/viewer/Release`. Run it in the command line (by default it will only open up an OpenGL window without reading any data), you will see a window like this:
 
 ![OpenGL Viewer](doc/img/default_viewer.png)
+
+
+To use the viewer to visualize your own data, you can simply specify the program argument -o to be your own output folder. We provided 50 frames of cloth simulation data in `viewer\test_data` for you to test the viewer. In the command line, go to the directory of the viewer executable and type `opengl_viewer.exe -o [your path]/dartmouth-phys-comp-starter/viewer/test_datatest_data` and you will see a triangle mesh for cloth.
+
+There are four shortcuts in the viewer so far:
+- `p`, play/stop the frames;
+- `r', return to the first frame;
+- `]`, go to the next frame;
+- `[`, go to the previous frame.
+
