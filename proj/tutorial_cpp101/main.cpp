@@ -5,141 +5,138 @@
 #include <string>
 #include <Eigen/Dense>
 
-void Test_Vector()
-{
-	std::vector<int> array={1,2,3,4};
-	
-	array.resize(10,1);
+using namespace std;
+using my_int_set=std::set<int>;
 
-	array.push_back(11);
+void Test_Array()
+{
+	vector<int> array={1,2,3,4};
+	array.resize(10,0);
+
+	auto array2=array;
+
+	int a=array2[3];
+	std::cout<<"third element: "<<a<<std::endl;
+
+	array2.clear();
+	array2.resize(20,1);
+	array2.push_back(2);
 
 	std::cout<<"array size: "<<array.size()<<std::endl;
-	std::cout<<"array ele: ";
-	for(auto& a:array)
-		std::cout<<a<<", ";
-	std::cout<<std::endl;
+	std::cout<<"array element: ";
+	for(auto& x:array2){
+		std::cout<<x<<", ";}
 
-	for(int i=0;i<array.size();i++)
-		std::cout<<array[i]<<", ";
-	std::cout<<std::endl;
+	for(int i=0;i<array2.size();i++){
+		std::cout<<array2[i]<<", ";}
 }
 
-void Test_Set()
+void Test_Grammar()
 {
-	std::cout<<"Test set"<<std::endl;
+	if(true){std::cout<<"this is true!"<<std::endl;}
+	else{std::cout<<"this is false"<<std::endl;}
 
-	std::set<int> set={1,2,2,3};
-	set.insert(4);
+	////and: &&, or: ||, not: !, equal: ==, not equal: !=
+	int i=0;
+
+	////while loop
+	while(i<10){
+		std::cout<<"i = "<<i<<std::endl;
+		i++;}
+
+	////for loop
+	for(int j=0;j<10;j++){
+		std::cout<<"j = "<<j<<std::endl;}
+
+	////switch
+	int k=1;
+	switch(k){
+	case 0:
+		std::cout<<"switch to k = 0"<<std::endl;
+		break;
+	case 1:
+		std::cout<<"switch to k = 1"<<std::endl;
+		break;
+	default:
+		std::cout<<"switch to default"<<std::endl;
+		break;}
+}
+
+void Test_Container()
+{
+	my_int_set set;
+	set.insert(1);
+	set.insert(2);
+	set.insert(3);
+	set.insert(3);
 	set.erase(2);
 
-	int e=5;
-	auto iter=set.find(e);
-	if(iter==set.end())
-		std::cout<<"cannot find element "<<e<<std::endl;
-	else 
-		std::cout<<"find element "<<e<<std::endl;
-
-	std::cout<<"set size: "<<set.size()<<std::endl;
+	std::cout<<"set #ele: "<<set.size()<<std::endl;
 	std::cout<<"set ele: ";
+	for(auto& s:set){
+		cout<<s<<", ";
+	}
 
-	for(auto& s:set)
-		std::cout<<s<<", ";
-}
+	auto check=set.find(3);
+	if(check!=set.end())
+		std::cout<<"find 3"<<std::endl;
 
-void Test_Map()
-{
-	std::cout<<"Test map"<<std::endl;
+	std::cout<<"map"<<std::endl;
+	map<int,string> mp;
+	mp[1]="a";
+	mp[2]="b";
+	for(auto& iter:mp){
+		std::cout<<"mp key: "<<iter.first<<", val: "<<iter.second<<std::endl;}
 
-	std::map<int,std::string> map;
-	map[1]="a";
-	map[2]="b";
-	map[3]="c";
-
-	std::cout<<"map size: "<<map.size()<<std::endl;
-	std::cout<<"map ele: ";
-	for(auto& s:map)
-		std::cout<<"["<<s.first<<", "<<s.second<<"], ";
-	std::cout<<std::endl;
-
-	auto x=map.find(2);
-	if(x!=map.end())
-		std::cout<<"find "<<x->first<<", "<<x->second<<std::endl;
+	////notice the returned value of find is a pointer, you need to use (* ) or -> to access its members
+	auto iter=mp.find(1);
+	std::cout<<"mp key: "<<(*iter).first<<", val: "<<iter->second<<std::endl;
 }
 
 void Test_Eigen()
 {
 	using Vector2=Eigen::Matrix<float,2,1>;
-	Vector2 v1=Vector2(1,2);
-	std::cout<<"v1="<<v1.transpose()<<std::endl;
-	Vector2 v2=Vector2(0,1);
-	float length=v1.norm();
-	Vector2 normal=v1.normalized();
-
-	std::cout<<"dot: "<<v1.dot(v2)<<std::endl;
-	std::cout<<"length:\n"<<length<<std::endl;
-	std::cout<<"normal:\n"<<normal<<std::endl;
-
-	////TODO: add, minus, scalar product, access element, unit vector, zero vector, all one vector
+	Vector2 v=Vector2(1,2);
+	Vector2 v2=Vector2(2,3);
+	Vector2 v3=v+v2;
+	float dot_prod=v.dot(v2);
+	float norm=v.norm();
+	Vector2 normal=v.normalized();
+	v.normalize();
 }
-
-template<int d> using Vector=Eigen::Matrix<float,d,1>;
 
 template<int d>
 class Sphere
 {
 public:
-	Vector<d> center;
+	using VectorD=Eigen::Matrix<float,d,1>;
+	VectorD center;
 	float radius;
-	Vector<d> velocity;
+
+	Sphere(VectorD _c=VectorD::Zero(),float _r=1.f)
+	{
+		center=_c;
+		radius=_r;
+	}
+
+	float Area(){return Area_Helper(*this);}
 };
 
-template<int d> bool Check_Collision(const Sphere<d>& s1,const Sphere<d>& s2)
-{
-	return (s1.center-s2.center).norm()<(s1.radius+s2.radius);
-}
-
-template<int d> bool Check_Wall(const Sphere<d>& s,float wall_left,float wall_right)
-{
-	return (s.center[0]<wall_left||s.center[0]>wall_right);
-}
-
-void Test_Template()
-{
-	const int d=3;
-	Sphere<d> s1={Vector<d>::Unit(0)*1.f,1.f,Vector<d>::Unit(0)*1.f};
-	Sphere<d> s2={Vector<d>::Unit(0)*8.f,1.f,Vector<d>::Unit(0)*-1.f};
-	std::cout<<"Check collision: "<<Check_Collision(s1,s2)<<std::endl;
-
-	float wall_left=0.f;
-	float wall_right=10.f;
-	float dt=1;
-	for(int frame=0;frame<100;frame++){
-		s1.center+=s1.velocity*dt;
-		s2.center+=s2.velocity*dt;
-		std::cout<<"Frame "<<frame<<": "<<s1.center[0]<<", "<<s2.center[0]<<std::endl;
-
-		if(Check_Collision(s1,s2)){
-			std::cout<<"S1 collides S2!"<<std::endl;
-			s1.velocity*=-1.f;
-			s2.velocity*=-1.f;
-		}
-		if(Check_Wall(s1,wall_left,wall_right)){
-			std::cout<<"S1 collides wall"<<std::endl;
-			s1.velocity*=-1.f;
-		}
-		if(Check_Wall(s2,wall_left,wall_right)){
-			std::cout<<"S2 collides wall"<<std::endl;
-			s2.velocity*=-1.f;
-		}
-	}
-}
+////use external function overloads to distinguish the implementations with specific template parameters
+float Area_Helper(Sphere<2>& circle){std::cout<<"this is implementation for d=2"<<std::endl;return 3.14f*circle.radius*circle.radius;}
+float Area_Helper(Sphere<3>& circle){std::cout<<"this is implementation for d=3"<<std::endl;return 4.f*3.14f*circle.radius*circle.radius;}
 
 void main()
 {
-	std::cout<<"COSC 89.18/189.02: C++11 and Eigen tutorial!"<<std::endl;
-	Test_Vector();
-	Test_Set();
-	Test_Map();
+	std::cout<<"Hello world!"<<std::endl;
+
+	Test_Container();
 	Test_Eigen();
-	Test_Template();
+
+	using Vector2=Eigen::Matrix<float,2,1>;
+	using Vector3=Eigen::Matrix<float,3,1>;
+	Sphere<2> circle={Vector2(0,0),1.f};
+	Sphere<3> sphere={Vector3(1,1,2),2.f};
+	std::cout<<circle.Area()<<std::endl;
+	std::cout<<sphere.Area()<<std::endl;	
 }
