@@ -118,18 +118,19 @@ class OpenGLColoredSegmentMesh : public OpenGLMesh<SegmentMesh<3> >
 
 	virtual void Display() const
     {
+        
 		if(!visible||mesh.elements.empty())return;
 		Update_Polygon_Mode();
 
 		GLfloat old_line_width;glGetFloatv(GL_LINE_WIDTH,&old_line_width);
+        
 		{std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[0];
 		shader->Begin();
 		glLineWidth(line_width);
 		OpenGLUbos::Bind_Uniform_Block_To_Ubo(shader,"camera");
 		glBindVertexArray(vao);
-		glDrawElements(GL_LINES,ele_size,GL_UNSIGNED_INT,0);
-		glLineWidth(old_line_width);
 		glDrawArrays(GL_LINES,0,vtx_size/8);
+        glLineWidth(old_line_width);
 		shader->End();}
     }
 
