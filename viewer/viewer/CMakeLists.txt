@@ -10,13 +10,16 @@ set(USE_STB ON)
 
 #set paths
 if(NOT proj_path)
-	set(proj_src_path ${PROJECT_SOURCE_DIR})
+	set(proj_src_path ${CMAKE_CURRENT_LIST_DIR})
 endif(NOT proj_path)
+
+
 
 if(NOT root_path)
 	set(root_path ${proj_src_path}/../..)
 	add_definitions(-DROOT_PATH=\"${root_path}\")
 endif(NOT root_path)
+
 
 #include Eigen
 include_directories(${root_path}/ext/eigen)
@@ -37,10 +40,12 @@ if(WIN32)
 	set(freeglut_src_path ${root_path}/viewer/ext/freeglut/include)
 	set(freeglut_lib_path ${root_path}/viewer/ext/freeglut/lib/x64)
 	include_directories(${freeglut_src_path})
+
 	set(glew_libs ${freeglut_lib_path}/glew32.lib)
 	list(APPEND lib_files ${glew_libs})
 	set(glut_libs debug ${freeglut_lib_path}/freeglutd.lib optimized ${freeglut_lib_path}/freeglut.lib)
 	list(APPEND lib_files ${glut_libs})
+		
 elseif(APPLE)  #freeglut and glew are installed on macos by "brew install freeglut glew"
 	find_package(GLEW REQUIRED)
 	if (GLEW_FOUND)

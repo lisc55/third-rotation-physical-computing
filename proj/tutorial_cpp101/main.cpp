@@ -126,7 +126,7 @@ public:
 float Area_Helper(Sphere<2>& circle){std::cout<<"this is implementation for d=2"<<std::endl;return 3.14f*circle.radius*circle.radius;}
 float Area_Helper(Sphere<3>& circle){std::cout<<"this is implementation for d=3"<<std::endl;return 4.f*3.14f*circle.radius*circle.radius;}
 
-void main()
+int main()
 {
 	std::cout<<"Hello world!"<<std::endl;
 
