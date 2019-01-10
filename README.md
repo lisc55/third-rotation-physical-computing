@@ -81,7 +81,7 @@ To use the viewer to visualize your own data, you can simply specify the program
 
 There are four shortcuts in the viewer so far:
 - `p`, play/stop the frames;
-- `r', return to the first frame;
+- `r`, return to the first frame;
 - `]`, go to the next frame;
 - `[`, go to the previous frame.
 
