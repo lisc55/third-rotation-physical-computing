@@ -6,6 +6,7 @@
 #ifndef __Driver_h__
 #define __Driver_h__
 #include "Common.h"
+#include "File.h"
 
 class Driver
 {

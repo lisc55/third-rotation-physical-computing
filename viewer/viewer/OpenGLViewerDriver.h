@@ -40,7 +40,8 @@ public:
 		////draw segment mesh
 		auto seg=Add_Object<OpenGLColoredSegmentMesh>("segment_mesh");
 		Set_Visibility(seg,'s',true);
-		Set_Color(seg,OpenGLColor::Red());
+		Set_Line_Width(seg,4.f);
+		Set_Color(seg,OpenGLColor(1.f,1.f,1.f,1.f));
 
 		////set lights
 		auto dir_light=OpenGLUbos::Add_Directional_Light(glm::vec3(-1.f,-.1f,-.2f));
