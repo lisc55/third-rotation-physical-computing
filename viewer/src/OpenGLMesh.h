@@ -118,7 +118,6 @@ class OpenGLColoredSegmentMesh : public OpenGLMesh<SegmentMesh<3> >
 
 	virtual void Display() const
     {
-        
 		if(!visible||mesh.elements.empty())return;
 		Update_Polygon_Mode();
 
@@ -213,14 +212,13 @@ class OpenGLTriangleMesh : public OpenGLMesh<TriangleMesh<3> >
 			std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[1];
 			shader->Begin();
 			if(use_mat)shader->Set_Uniform_Mat(&mat);
-			glPushAttrib(GL_ENABLE_BIT);
 			glEnable(GL_POLYGON_OFFSET_FILL);
 			glPolygonOffset(1.f,1.f);
 			Bind_Uniform_Block_To_Ubo(shader,"camera");
 			Bind_Uniform_Block_To_Ubo(shader,"lights");
 			glBindVertexArray(vao);
 			glDrawElements(GL_TRIANGLES,ele_size,GL_UNSIGNED_INT,0);
-			glPopAttrib();
+            glDisable(GL_POLYGON_OFFSET_FILL);
 			shader->End();
 		}break;}
     }
