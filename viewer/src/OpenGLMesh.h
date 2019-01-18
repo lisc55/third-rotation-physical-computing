@@ -125,7 +125,10 @@ class OpenGLColoredSegmentMesh : public OpenGLMesh<SegmentMesh<3> >
         
 		{std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[0];
 		shader->Begin();
+        // On MacOSX only 1.0f is a valid line width
+#ifndef __APPLE__
 		glLineWidth(line_width);
+#endif
 		OpenGLUbos::Bind_Uniform_Block_To_Ubo(shader,"camera");
 		glBindVertexArray(vao);
 		glDrawArrays(GL_LINES,0,vtx_size/8);
