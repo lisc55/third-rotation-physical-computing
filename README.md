@@ -41,22 +41,26 @@ The simulation data is generated in the same folder as the executable. Typically
 - **Linux**: `sudo apt-get install cmake`
 - **OSX**: `brew install cmake` (using [Homebrew](https://brew.sh/))
 
-**Substep 2.1: Run setup.sh/bat**
+**Substep 2.1: Install Dependencies (Linux/OSX only)**
+- **Linux**: `sudo apt-get install glew freeglut`
+- **OSX**: `brew install glew freeglut`
+
+**Substep 2.2: Run setup.sh/bat**
 
     .\scripts\setup.bat [Windows]
-    ./scripts/setup.sh [Linux/Mac]
+    ./scripts/setup.sh [Linux/OSX]
 
 ### Step 3: Compile and run the code
 
 To test if everything works correctly you can run:
 
-    .\scripts\run_assignment.bat a0_hello_world [Windows]
-    ./scripts/run_assignment.sh a0_hello_world [Linux/Mac]
+    .\scripts\run_assignment.bat a0_hello_world 1 [Windows]
+    ./scripts/run_assignment.sh a0_hello_world 1 [Linux/Mac]
 
 This will:
 
 - Compile the code for the hello world project and any dependencies
-- Run the assignment and generate simulation data
+- Run the assignment and generate simulation data for the given test (`1` is the rod simulation for assignment 1)
 - Open the viewer load the data that was just generated
 	- In the viewer you can press `w` to start recording and `p` to play back the animation
 - If you recorded anything and ffmpeg is installed, it will render a video of the simulation once the viewer is closed. This is saved under "assignment name".mp4
@@ -66,18 +70,39 @@ This will:
 - **Windows**: Open the .sln project file in the `build` folder.
 - **Linux or OSX**: Use your editor of choice to edit the assignment files in `proj`
 
-## 2. Compile and run the OpenGL viewer project
+## 3. Command Line Details
 
-We provide executables for the OpenGL viewer in the repository. You may download and use them directly to visualize your simulation data.
+While the `setup` and `run_assignment` scripts should get you up and running quickly, you might want to peek behind the curtains and run the individual parts manually.
 
-You may also want to compile the source code if you are interested in customizing your own viewer. To do so, you may follow the same steps as you make and compile the hello_world project. The only difference is: the CMake source code path for the viewer is `[Your path]/dartmouth-phys-comp-starter/viewer/viewer` and the build path is `[Your path]/dartmouth-phys-comp-starter/build/viewer`
+You should familiarize yourself with CMake, which is a tool that allows you to describe your build steps in a platform independent way.
 
-Once the viewer is compiled successfully, you will find the executable under the folder of `build/viewer/Release`. Run it in the command line (by default it will only open up an OpenGL window without reading any data), you will see a window like this:
+
+### Setup
+
+During setup, the script creates a directory called `build` in your top level project folder. 
+This is standard CMake practice and makes sure that we are not polluting our source code with platform specific build files.
+
+The script enters the directory and executes CMake using `cmake ..`. CMake finds the `CMakeLists.txt' file in the project folder and executes the build setup steps that we configured.
+
+After this runs, you will have a bunch of files and folders in the `build` folder. You might notice that the folder structure mirrors the one in the source folder.
+
+Generally, you can find the build files related to "proj/assignment" in "**build**/proj/assignment". Following this pattern, the build files related to the viewer are in "**build**/viewer/viewer".
+
+### Build
+
+The build step can be done through cmake as well. In the `build` folder, run 
+
+    cmake --build . --config Release
+    
+This will build the viewer as well as all assignments and examples.
+
+To run the viewer you can then enter `./viewer/viewer/opengl_viewer` in the command line. You should see the following:
 
 ![OpenGL Viewer](doc/img/default_viewer.png)
 
-
-To use the viewer to visualize your own data, you can simply specify the program argument -o to read your own output folder. We provided 50 frames of cloth simulation data in `viewer\test_data` for you to test the viewer. In the command line, go to the directory of the viewer executable and type `opengl_viewer.exe -o [your path]/dartmouth-phys-comp-starter/viewer/test_datatest_data` and you will see a triangle mesh for cloth.
+To use the viewer to visualize your own data, you can simply specify the program argument -o to read your own output folder. 
+We provided 50 frames of cloth simulation data in `viewer\test_data` for you to test the viewer. 
+In the command line, go to the directory of the viewer executable and type `opengl_viewer.exe -o [your path]/dartmouth-phys-comp-starter/viewer/test_data` and you will see a triangle mesh for cloth.
 
 There are four shortcuts in the viewer so far:
 - `p`, play/stop the frames;
@@ -85,3 +110,9 @@ There are four shortcuts in the viewer so far:
 - `]`, go to the next frame;
 - `[`, go to the previous frame.
 
+Similarly, you'll find the assignment executables in their respective subfolders in the `build` folder. If you want to run an assignment (here assignment 1) and look at the result the process is the following
+
+    ./proj/a1_mass_spring/mass_spring -o "some output folder" -test "the number of the test you want to run"
+    ./viewer/viewer/opengl_viewer -o "the output folder you specified above"
+    
+For more details, you can look at the `setup` and `run_assignment` scripts!
