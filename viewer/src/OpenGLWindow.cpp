@@ -246,6 +246,12 @@ void OpenGLWindow::Display_Text()
 {
 	if(texts.empty())return;
 
+    // Text rendering uses features that are not available on MacOSX
+    // Disable it.
+#ifdef __APPLE__
+    return;
+#endif
+    
     auto camera=Get_Camera_Ubo();
     glm::mat4& ortho=camera->object.ortho;
 
