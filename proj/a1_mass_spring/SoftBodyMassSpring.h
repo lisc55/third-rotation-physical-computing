@@ -25,7 +25,7 @@ public:
 	////Body force
 	VectorD g=VectorD::Unit(1)*(real)-1.;
 	
-	enum class TimeIntegration{ExplicitEuler,ImplicitEuler} time_integration=TimeIntegration::ImplicitEuler;
+	enum class TimeIntegration{ExplicitEuler,ImplicitEuler} time_integration=TimeIntegration::ExplicitEuler;
 
 	////Implicit time integration
 	SparseMatrixT K;
