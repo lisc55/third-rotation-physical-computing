@@ -231,7 +231,7 @@ in vec3 vtx_frg_pos;
 out vec4 frag_color;
 void main()								
 { 
-	vec3 c2=vec3(.0f,.3f,.0f);
+	vec3 c2=vec3(1.f,1.f,1.f);
 	float m=abs(vtx_frg_pos.x);
 	vec3 c=mix(c2,color.xyz,m*m);
 	frag_color=vec4(c,1.f);

@@ -172,14 +172,6 @@ template<class T,int d> using ArrayF3P=ArrayF<T,Pow(3,d) >;
 //////////////////////////////////////////////////////////////////////////
 ////Analytical geometry
 
-template<int d> class Sphere
-{using VectorD=Vector<real,d>;using VectorDi=Vector<int,d>;
-public:
-	VectorD center=VectorD::Zero();
-	real radius=(real)1.0;
-	Sphere(const VectorD& _center,const real _radius):center(_center),radius(_radius){}
-};
-
 template<int d> class Box
 {using VectorD=Vector<real,d>;using VectorDi=Vector<int,d>;
 public:

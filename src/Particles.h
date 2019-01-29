@@ -87,11 +87,14 @@ template<int d> class Particles
 {using VectorD=Vector<real,d>;
 public:
 	Attributes<d> attributes;
-	Declare_Attribute(VectorD,X,x,Rebind_X);
-    Declare_Attribute(VectorD,V,v,Rebind_V);
-    Declare_Attribute(VectorD,F,f,Rebind_F);
-    Declare_Attribute(real,M,m,Rebind_M);
-    Declare_Attribute(real,C,c,Rebind_C);
+	Declare_Attribute(VectorD,X,x,Rebind_X);	////position
+    Declare_Attribute(VectorD,V,v,Rebind_V);	////velocity
+    Declare_Attribute(VectorD,F,f,Rebind_F);	////force
+    Declare_Attribute(real,M,m,Rebind_M);		////mass
+    Declare_Attribute(real,C,c,Rebind_C);		////color
+	Declare_Attribute(real,R,r,Rebind_R);		////radius
+	Declare_Attribute(real,P,p,Rebind_P);		////pressure
+	Declare_Attribute(real,D,den,Rebind_D);		////density
 
 	Particles(){Add_Attributes();}
 
@@ -102,6 +105,9 @@ public:
 		Add_Attribute("f",f);
 		Add_Attribute("m",m);
 		Add_Attribute("c",c);
+		Add_Attribute("r",r);
+		Add_Attribute("p",p);
+		Add_Attribute("den",den);
 	}
 
 	virtual void Resize(const int size){attributes.Resize((size_type)size);}

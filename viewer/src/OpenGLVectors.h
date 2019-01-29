@@ -6,6 +6,8 @@
 #ifndef __OpenGLVectors_h__
 #define __OpenGLVectors_h__
 #include "OpenGLObject.h"
+#include "OpenGLShaderProgram.h"
+#include "OpenGLBufferObjects.h"
 
 class OpenGLVectors : public OpenGLObject
 {typedef OpenGLObject Base;

@@ -15,7 +15,7 @@ using namespace OpenGLUbos;
 
 OpenGLBackground::OpenGLBackground()
 {
-	color=OpenGLColor(.0f,.18f,.48f,1.f);name="background";
+	color=OpenGLColor(.9f,.9f,1.f,1.f);name="background";
 	box=Box<2>(Vector2::Ones()*(real)-1,Vector2::Ones());polygon_mode=PolygonMode::Fill;
 	Set_Depth((real).9999);
 }
@@ -181,6 +181,7 @@ void OpenGLCircle::Update_Data_To_Render()
 
 void OpenGLCircle::Display() const
 {
+	Update_Polygon_Mode();
 	std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[0];
 	shader->Begin();
 	glPushAttrib(GL_LINE_BIT);
@@ -195,6 +196,46 @@ void OpenGLCircle::Display() const
 }
 
 void OpenGLCircle::Update_Model_Matrix()
+{
+	model=glm::translate(glm::mat4(1.f),glm::vec3((GLfloat)pos[0],(GLfloat)pos[1],(GLfloat)pos[2]));
+	model=glm::scale(model,glm::vec3(radius,radius,radius));
+}
+
+void OpenGLSolidCircle::Initialize()
+{
+	Base::Initialize();
+	Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("vpos_model"));
+
+	OpenGL_Vertex4(Vector3(0,0,0),opengl_vertices);
+	real step=(real)3.1415927*(real)2/(real)n;
+	for(int i=0;i<n;i++)OpenGL_Vertex4(Vector3(cos((real)i*step),sin((real)i*step),(real)0),opengl_vertices);	////position, 4 floats
+	OpenGL_Vertex4(Vector3((real)1,(real)0,(real)0),opengl_vertices);
+
+	Set_OpenGL_Vertices();
+	Set_OpenGL_Vertex_Attribute(0,4,4,0);	////position
+}
+
+void OpenGLSolidCircle::Update_Data_To_Render()
+{
+	if(!Update_Data_To_Render_Pre())return;
+	Update_Model_Matrix();
+	Update_Data_To_Render_Post();
+}
+
+void OpenGLSolidCircle::Display() const
+{
+	Update_Polygon_Mode();
+	std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[0];
+	shader->Begin();
+	Bind_Uniform_Block_To_Ubo(shader,"camera");
+	shader->Set_Uniform_Vec4f("color",color.rgba);
+	shader->Set_Uniform_Matrix4f("model",glm::value_ptr(model));
+	glBindVertexArray(vao);
+	glDrawArrays(GL_TRIANGLE_FAN,0,vtx_size/4);
+	shader->End();
+}
+
+void OpenGLSolidCircle::Update_Model_Matrix()
 {
 	model=glm::translate(glm::mat4(1.f),glm::vec3((GLfloat)pos[0],(GLfloat)pos[1],(GLfloat)pos[2]));
 	model=glm::scale(model,glm::vec3(radius,radius,radius));

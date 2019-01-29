@@ -174,6 +174,7 @@ public:
 
 	template<class T_OBJECT> void Bind_Func_Idx_0_Callback_Key(const uchar key,T_OBJECT* obj,const std::string _func="")
 	{if(obj==nullptr)return;std::string func=_func;if(func=="")func="func "+obj->name;Bind_Callback_Key(key,&obj->Toggle_Func_Idx_0_Func,func);}
+
 protected:
 
 };

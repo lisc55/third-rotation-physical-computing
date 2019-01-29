@@ -82,6 +82,23 @@ class OpenGLCircle : public OpenGLObject
 	virtual void Update_Model_Matrix();
 };
 
+class OpenGLSolidCircle : public OpenGLObject
+{public: typedef OpenGLObject Base;
+	Vector3 pos=Vector3::Zero();
+	real radius=(real).1;
+	glm::mat4 model=glm::mat4(1.f);
+
+	int n=16;
+	Array<Vector3> vtx;
+
+	OpenGLSolidCircle(){name="circle";color=OpenGLColor::Green();polygon_mode=PolygonMode::Fill;}
+
+	virtual void Initialize();
+	virtual void Update_Data_To_Render();
+	virtual void Display() const;
+	virtual void Update_Model_Matrix();
+};
+
 //////////////////////////////////////////////////////////////////////////
 ////UI Object
 #ifdef USE_IMGUI
