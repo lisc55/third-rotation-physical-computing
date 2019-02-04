@@ -184,14 +184,14 @@ void OpenGLCircle::Display() const
 	Update_Polygon_Mode();
 	std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[0];
 	shader->Begin();
-	glPushAttrib(GL_LINE_BIT);
+	//glPushAttrib(GL_LINE_BIT);
 	Bind_Uniform_Block_To_Ubo(shader,"camera");
-	glLineWidth(line_width);
+	//glLineWidth(line_width);
 	shader->Set_Uniform_Vec4f("color",color.rgba);
 	shader->Set_Uniform_Matrix4f("model",glm::value_ptr(model));
 	glBindVertexArray(vao);
 	glDrawArrays(GL_LINE_LOOP,0,vtx_size/4);
-	glPopAttrib();
+	//glPopAttrib();
 	shader->End();
 }
 
