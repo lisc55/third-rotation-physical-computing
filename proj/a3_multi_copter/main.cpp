@@ -11,16 +11,14 @@
 
 int main(int argc,char* argv[])
 {
-	int driver=1;
-
-	switch(driver){
-	case 1:{
-		MultiCopterDriver<3> driver;
-		driver.Initialize();
-		driver.Run();	
-	}break;
+	int flag = 0;
+	if (argc >= 2) {
+		flag = std::stoi(argv[1]);
 	}
-	
+
+	MultiCopterDriver<3> driver;
+	driver.Initialize(flag);
+	driver.Run();
 }
 
 #endif

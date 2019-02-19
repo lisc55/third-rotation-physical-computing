@@ -16,12 +16,16 @@ template<int d> class MultiCopterDriver : public Driver, public OpenGLViewer
 	OpenGLSegmentMesh* opengl_copter=nullptr;
 
 public:
-	virtual void Initialize()
+	virtual void Initialize(const int flag)
 	{
-		copter.Add_Rotor(VectorD::Unit(0),VectorD::Unit(1));
-		copter.Add_Rotor(-VectorD::Unit(0),VectorD::Unit(1));
-		copter.Add_Rotor(VectorD::Unit(2),VectorD::Unit(1));
-		copter.Add_Rotor(-VectorD::Unit(2),VectorD::Unit(1));
+		copter.Initialize(flag);
+
+		const VectorD dir = -VectorD::UnitZ();
+		const real d = copter.arm_length / (real)(std::sqrt(2.0));
+		copter.Add_Rotor(VectorD(d, -d, 0.0), dir);
+		copter.Add_Rotor(VectorD(d, d, 0.0), dir);
+		copter.Add_Rotor(VectorD(-d, d, 0.0), dir);
+		copter.Add_Rotor(VectorD(-d, -d, 0.0), dir);
 
 		////viewer initialization, initialize visualization data
 		OpenGLViewer::Initialize();
@@ -32,8 +36,8 @@ public:
 	{
 		opengl_copter=Add_Interactive_Object<OpenGLSegmentMesh>();
 		opengl_copter->mesh.elements.resize(2);
-		opengl_copter->mesh.elements[0]=Vector2i(0,1);
-		opengl_copter->mesh.elements[1]=Vector2i(2,3);
+		opengl_copter->mesh.elements[0]=Vector2i(0,2);
+		opengl_copter->mesh.elements[1]=Vector2i(1,3);
 		opengl_copter->line_width=5.f;
 		*opengl_copter->mesh.vertices=copter.rotor_pos;
 

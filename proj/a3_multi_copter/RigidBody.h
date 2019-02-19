@@ -8,7 +8,11 @@ template<int d> class RigidBody
 {using VectorD=Vector<real,d>;using VectorDi=Vector<int,d>;using MatrixD=Matrix<real,d>;
 public:
 	VectorD position=VectorD::Zero();
-	MatrixD orientation=MatrixD::Identity();
+	VectorD velocity=VectorD::Zero();
+	Eigen::AngleAxis<real> orientation=Eigen::AngleAxis<real>(0.0, VectorD::UnitZ());
+	MatrixD R=MatrixD::Identity();
+	MatrixD Rt=MatrixD::Identity();
+	VectorD omega=VectorD::Zero();
 
 	virtual void Initialize()
 	{
@@ -17,6 +21,27 @@ public:
 	virtual void Advance(const real dt)
 	{
 	}
-};
+
+	const VectorD WorldVectorToLocalVector(const VectorD& v)
+	{
+		return Rt * v;
+	}
+
+	const VectorD LocalVectorToWorldVector(const VectorD& v)
+	{
+		return R * v;
+	}
+
+	const VectorD WorldPointToLocalPoint(const VectorD& p)
+	{
+		return Rt * (p - position);
+	}
+
+	const VectorD LocalPointToWorldPoint(const VectorD& p)
+	{
+		return position + R * p;
+	}
+}
+;
 
 #endif
