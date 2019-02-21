@@ -61,7 +61,13 @@ public:
     qNow=qDown=qDrag=Quaternionf(1,0,0,0);
     center=vDown=TV2::Zero();
     vFrom=vTo=vrFrom=vrTo=TV::Zero();
-    mNow=mDown=mDeltaNow=Matrix4f::Identity();}
+	mNow=mDown=mDeltaNow=Matrix4f::Identity();
+
+	qNow=qDown=qDrag=Eigen::AngleAxisf(3.1415927f*-.05f,Vector3f::Unit(1))
+		*Eigen::AngleAxisf(3.1415927f*.3f,Vector3f::Unit(0));
+	mNow=From_Linear(qNow.toRotationMatrix());
+	mDeltaNow=From_Linear(qDrag.toRotationMatrix());
+	}
 
     void Update(const TV2& vNow){Update_World(vNow);}
 
@@ -312,7 +318,7 @@ void OpenGLWindow::Update_Camera()
 
     glm::mat4& view=camera->object.view;
     view=glm::translate(glm::mat4(),glm::vec3(0.f,0.f,(float)-camera_distance))*glm::make_mat4x4(arcball_matrix.data())*glm::make_mat4x4(rotation_matrix.data());
-    view=glm::translate(view,glm::vec3(-camera_target[0],-camera_target[1],-camera_target[2]));
+	view=glm::translate(view,glm::vec3(-camera_target[0],-camera_target[1],-camera_target[2]));
 
     glm::mat4& pvm=camera->object.pvm;
     pvm=proj*view;	////assuming model matrix is identity
