@@ -11,10 +11,9 @@
 
 int main(int argc,char* argv[])
 {
-	int flag = 0;
-	if (argc >= 2) {
-		flag = std::stoi(argv[1]);
-	}
+	////0-Test simulation (LV1, 3.1-3.2)
+	////1-Test controller (LV2, 3.3-3.5)
+	int flag = 1;
 
 	MultiCopterDriver<3> driver;
 	driver.Initialize(flag);

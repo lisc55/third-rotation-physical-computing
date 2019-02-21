@@ -55,9 +55,21 @@ public:
 	////update simulation and visualization for each time step
 	virtual void Toggle_Next_Frame()
 	{
-		copter.Advance(dt);
+		static real t = 0.0;
+		Array<VectorD> targets = {
+			VectorD(0.0, 0.0, -1.0),
+			VectorD(1.0, 1.0, -1.2),
+			VectorD(2.0, 0.0, -1.4),
+			VectorD(1.0, -1.0, -1.2),
+			VectorD(0.0, 0.0, -1.0),
+			VectorD(0.0, 0.0, 0.0)
+		};
+		int idx = (int)(t / 5.0);
+		if (idx > 5) idx = 5;
+		copter.Advance(dt, targets[idx]);
 		Sync_Simulation_And_Visualization_Data();
 		OpenGLViewer::Toggle_Next_Frame();
+		t += dt;
 	}
 
 	virtual void Run()
