@@ -215,14 +215,15 @@ public:
 		
 		// -- Your implementation starts --
 		// -- Your implementation ends --
-
-		VectorD omega_rate = (net_torque - old_omega.cross(old_omega.cwiseProduct(inertia))).cwiseQuotient(inertia);
 		VectorD n = old_omega * dt;
 		real n_len = n.norm();
 		if(n_len<1e-6)n=VectorD::UnitZ();
 		else n/=n_len;
 		rigid_body.orientation = Eigen::AngleAxis<real>(n_len, n) * old_orientation;
-		rigid_body.omega = old_omega + dt * omega_rate;
+
+		VectorD old_body_omega = old_R.transpose() * old_omega;
+		VectorD body_omega_rate = (net_torque - old_body_omega.cross(old_body_omega.cwiseProduct(inertia))).cwiseQuotient(inertia);
+		rigid_body.omega = rigid_body.orientation.toRotationMatrix() * (old_body_omega + dt * body_omega_rate);
 	}
 
 	//////////////////////////////////////////////////////////////////////////
