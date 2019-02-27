@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.7)
 
 #initialize project
-set(proj_name multicopter)
+set(proj_name multi_copter)
 project(${proj_name})
 
 #set paths

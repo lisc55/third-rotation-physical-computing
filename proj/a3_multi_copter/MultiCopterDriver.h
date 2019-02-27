@@ -34,11 +34,11 @@ public:
 		copter.Initialize(flag);
 
 		const VectorD dir = -VectorD::UnitZ();
-		const real d = copter.arm_length / (real)(std::sqrt(2.0));
-		copter.Add_Rotor(VectorD(d, -d, 0.0), dir);
-		copter.Add_Rotor(VectorD(d, d, 0.0), dir);
-		copter.Add_Rotor(VectorD(-d, d, 0.0), dir);
-		copter.Add_Rotor(VectorD(-d, -d, 0.0), dir);
+		const real d1 = copter.arm_length / (real)(std::sqrt(2.0));
+		copter.Add_Rotor(VectorD(d1, -d1, 0.0), dir);
+		copter.Add_Rotor(VectorD(d1, d1, 0.0), dir);
+		copter.Add_Rotor(VectorD(-d1, d1, 0.0), dir);
+		copter.Add_Rotor(VectorD(-d1, -d1, 0.0), dir);
 
 		////viewer initialization, initialize visualization data
 		OpenGLViewer::Initialize();
