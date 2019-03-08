@@ -31,21 +31,6 @@ public:
 		u.resize(node_num,VectorD::Unit(0)*(real).01);
 
 		A.resize(node_num,node_num);
-		Array<TripletT> elements;
-		for(int i=0;i<node_num;i++){
-			VectorDi node=grid.Node_Coord(i);
-			elements.push_back(TripletT(i,i,(real)4*one_over_dx_sq));
-			for(int j=0;j<pow(2,d);j++){
-				VectorDi nb_1=node-VectorDi::Unit(j);
-				if(grid.Valid_Node(nb_1)){
-					int nb_idx_1=grid.Node_Index(nb_1);
-					elements.push_back(TripletT(i,nb_idx_1,-one_over_dx_sq));}
-				VectorDi nb_2=node+VectorDi::Unit(j);
-				if(grid.Valid_Node(nb_2)){
-					int nb_idx_2=grid.Node_Index(nb_2);
-					elements.push_back(TripletT(i,nb_idx_2,-one_over_dx_sq));}}}
-		A.setFromTriplets(elements.begin(),elements.end());
-		A.makeCompressed();	
 
 		p.resize(node_num);div_u.fill((real)0);
 		div_u.resize(node_num);div_u.fill((real)0);

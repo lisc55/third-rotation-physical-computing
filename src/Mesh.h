@@ -165,6 +165,8 @@ inline void Update_Normals(const TriangleMesh<3>& mesh,Array<Vector3>& normals)
 inline int Element_Edges(const Vector3i& v,Array<Vector2i>& edges)
 {edges[0]=Vector2i(v[0],v[1]);edges[1]=Vector2i(v[1],v[2]);edges[2]=Vector2i(v[2],v[0]);return 3;}
 
+inline Vector2i Sorted(const Vector2i& v){return v[0]>v[1]?v:Vector2i(v[1],v[0]);}
+
 template<int d> void Get_Edges(const TriangleMesh<d>& mesh,Array<Vector2i>& edges)
 {
 	Hashset<Vector2i> edge_hashset;Array<Vector2i> element_edges(3);
@@ -173,8 +175,6 @@ template<int d> void Get_Edges(const TriangleMesh<d>& mesh,Array<Vector2i>& edge
 		for(int i=0;i<n;i++)edge_hashset.insert(Sorted(element_edges[i]));}
 	for(const auto& edge:edge_hashset)edges.push_back(edge);
 }
-
-inline Vector2i Sorted(const Vector2i& v){return v[0]>v[1]?v:Vector2i(v[1],v[0]);}
 
 template<int d> void Subdivide(TriangleMesh<d>* mesh)
 {
