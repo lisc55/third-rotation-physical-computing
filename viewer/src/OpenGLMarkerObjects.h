@@ -99,6 +99,34 @@ class OpenGLSolidCircle : public OpenGLObject
 	virtual void Update_Model_Matrix();
 };
 
+class OpenGLMarkerTriangleMesh : public OpenGLObject
+{public:typedef OpenGLObject Base;using Base::color;
+	TriangleMesh<3> mesh;
+	glm::mat4 model=glm::mat4(1.f);
+
+	OpenGLMarkerTriangleMesh(){name="interactive_triangle_mesh";color=OpenGLColor::Green();polygon_mode=PolygonMode::Fill;}
+	
+	virtual void Initialize();
+	virtual void Update_Data_To_Render();
+	virtual void Display() const;
+	virtual void Update_Model_Matrix(){}
+
+protected:
+	virtual void Update_Mesh_Data_To_Render();
+};
+
+class OpenGLSphere : public OpenGLMarkerTriangleMesh
+{public:typedef OpenGLMarkerTriangleMesh Base;
+	using Base::color;using Base::mesh;using Base::model;
+	Vector3 pos=Vector3::Zero();
+	real radius=(real).1;
+
+	OpenGLSphere(){name="sphere";color=OpenGLColor::Red();polygon_mode=PolygonMode::Fill;}
+	
+	virtual void Initialize();
+	virtual void Update_Model_Matrix();
+};
+
 //////////////////////////////////////////////////////////////////////////
 ////UI Object
 #ifdef USE_IMGUI

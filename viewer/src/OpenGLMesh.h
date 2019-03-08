@@ -175,13 +175,13 @@ class OpenGLTriangleMesh : public OpenGLMesh<TriangleMesh<3> >
 
 		Array<Vector3> normals;
 		if(use_vtx_normal&&(normals.size()<mesh.Vertices().size()||recomp_vtx_normal)){
-			Update_Normals_Helper(mesh,normals);}
+			Update_Normals(mesh,normals);}
 
 		GLuint stride_size=4+(use_vtx_color?4:0)+(use_vtx_normal?4:0)+(use_vtx_tex?4:0);
 		int i=0;for(auto& p:mesh.Vertices()){
 			OpenGL_Vertex4(p,opengl_vertices);	////position, 4 floats
 			if(use_vtx_color){
-				OpenGL_Color4(color.rgba,opengl_vertices);}				////color, 4 floats
+				OpenGL_Color4(color.rgba,opengl_vertices);}		////color, 4 floats
 			if(use_vtx_normal){
 				OpenGL_Vertex4(normals[i],opengl_vertices);}	////normal, 4 floats
 			i++;}
@@ -225,15 +225,5 @@ class OpenGLTriangleMesh : public OpenGLMesh<TriangleMesh<3> >
 			shader->End();
 		}break;}
     }
-
-protected:
-	void Update_Normals_Helper(const TriangleMesh<3>& mesh,Array<Vector3>& normals)
-    {
-        normals.resize(mesh.Vertices().size(),Vector3::Zero());
-        for(const auto& v:mesh.elements){Vector3 n=Normal(mesh.Vertices()[v[0]],mesh.Vertices()[v[1]],mesh.Vertices()[v[2]]);for(int j=0;j<3;j++){normals[v[j]]+=n;}}
-        for(auto& n:normals){n.normalize();}
-    }
-
-	Vector3 Normal(const Vector3& p1,const Vector3& p2,const Vector3& p3){return (p2-p1).cross(p3-p1).normalized();}
 };
 #endif

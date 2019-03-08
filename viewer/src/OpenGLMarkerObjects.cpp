@@ -240,3 +240,69 @@ void OpenGLSolidCircle::Update_Model_Matrix()
 	model=glm::translate(glm::mat4(1.f),glm::vec3((GLfloat)pos[0],(GLfloat)pos[1],(GLfloat)pos[2]));
 	model=glm::scale(model,glm::vec3(radius,radius,radius));
 }
+
+//////////////////////////////////////////////////////////////////////////
+////OpenGLMarkerTriangleMesh
+
+void OpenGLMarkerTriangleMesh::Initialize()
+{
+	Base::Initialize();
+	Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("vpos_model_vnormal_dl_fast"));
+
+	Update_Mesh_Data_To_Render();
+}
+
+void OpenGLMarkerTriangleMesh::Update_Mesh_Data_To_Render()
+{
+	Array<Vector3> normals;Update_Normals(mesh,normals);
+	for(auto i=0;i<mesh.Vertices().size();i++){
+		OpenGL_Vertex4(mesh.Vertices()[i],opengl_vertices);
+		OpenGL_Vertex4(normals[i],opengl_vertices);}	////position, 4 floats
+	
+	Set_OpenGL_Vertices();
+	Set_OpenGL_Vertex_Attribute(0,4,8,0);	////position
+	Set_OpenGL_Vertex_Attribute(1,4,8,4);	////normal
+		
+	for(auto& e:mesh.elements)
+		OpenGL_Vertex(e,opengl_elements);
+	Set_OpenGL_Elements();
+}
+
+void OpenGLMarkerTriangleMesh::Update_Data_To_Render()
+{
+	if(!Update_Data_To_Render_Pre())return;
+	Update_Model_Matrix();
+	Update_Data_To_Render_Post();	
+}
+
+void OpenGLMarkerTriangleMesh::Display() const
+{
+	std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[0];
+	shader->Begin();
+	Bind_Uniform_Block_To_Ubo(shader,"camera");
+	Bind_Uniform_Block_To_Ubo(shader,"lights");
+	shader->Set_Uniform_Vec4f("mat_dif",color.rgba);
+	shader->Set_Uniform_Vec4f("mat_spec",color.rgba);
+	shader->Set_Uniform_Matrix4f("model",glm::value_ptr(model));
+	glBindVertexArray(vao);
+	glDrawElements(GL_TRIANGLES,ele_size,GL_UNSIGNED_INT,0);
+	shader->End();
+}
+
+//////////////////////////////////////////////////////////////////////////
+////OpenGLSphere
+
+void OpenGLSphere::Initialize()
+{
+	Base::Initialize();
+	Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("vpos_model_vnormal_dl_fast"));
+
+	Initialize_Sphere_Mesh(radius,&mesh);
+
+	Update_Mesh_Data_To_Render();
+}
+
+void OpenGLSphere::Update_Model_Matrix()
+{
+	model=glm::translate(glm::mat4(1.f),glm::vec3((GLfloat)pos[0],(GLfloat)pos[1],(GLfloat)pos[2]));
+}

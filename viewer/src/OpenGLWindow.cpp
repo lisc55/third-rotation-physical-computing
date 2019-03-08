@@ -63,9 +63,11 @@ public:
     vFrom=vTo=vrFrom=vrTo=TV::Zero();
 	mNow=mDown=mDeltaNow=Matrix4f::Identity();
 
-	qNow=qDown=qDrag=Eigen::AngleAxisf(3.1415927f*-.05f,Vector3f::Unit(1))
-		*Eigen::AngleAxisf(3.1415927f*.3f,Vector3f::Unit(0));
-	mNow=From_Linear(qNow.toRotationMatrix());
+	//////for Drone test only
+	//qNow=qDown=qDrag=Eigen::AngleAxisf(3.1415927f*-.05f,Vector3f::Unit(1))
+	//	*Eigen::AngleAxisf(3.1415927f*.3f,Vector3f::Unit(0));
+	//mNow=From_Linear(qNow.toRotationMatrix());
+
 	mDeltaNow=From_Linear(qDrag.toRotationMatrix());
 	}
 

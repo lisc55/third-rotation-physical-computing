@@ -275,6 +275,22 @@ void main()
 );
 }
 
+const std::string vnormal_vfpos_dl_fast_frg_shader=To_String(
+~include version;
+~include material;
+~include lights;
+~include phong_dl_fast_func;
+in vec3 vtx_normal;
+in vec3 vtx_frg_pos;
+out vec4 frag_color;
+void main()
+{
+    vec3 norm=normalize(vtx_normal);
+	vec3 color=phong_dl_fast(norm);
+	frag_color=vec4(color,1.f);
+}
+);
+
 using namespace OpenGLShaders;
 
 //////////////////////////////////////////////////////////////////////////
@@ -428,6 +444,7 @@ void OpenGLShaderLibrary::Initialize_Shaders()
 	Add_Shader(psize_vtx_shader,ucolor_frg_shader,"psize_ucolor");
 	Add_Shader(vnormal_vfpos_vtx_shader,vnormal_vfpos_lt_frg_shader,"vnormal_lt");
 	Add_Shader(vclip_vfpos_vtx_shader,gcolor_frg_shader,"gcolor_bk");
+	Add_Shader(vpos_model_vnormal_vfpos_vtx_shader,vnormal_vfpos_dl_fast_frg_shader,"vpos_model_vnormal_dl_fast");
 }
 
 void OpenGLShaderLibrary::Initialize_Headers()
