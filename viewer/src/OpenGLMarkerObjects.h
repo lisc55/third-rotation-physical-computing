@@ -65,6 +65,17 @@ class OpenGLTriangle : public OpenGLObject
 	virtual void Display() const;
 };
 
+class OpenGLPolygon : public OpenGLObject
+{public:typedef OpenGLObject Base;using Base::color;using Base::line_width;
+	Array<Vector3> vtx;
+
+	OpenGLPolygon(){name="polygon";color=OpenGLColor::Blue();polygon_mode=PolygonMode::Fill;}
+	
+	virtual void Initialize();
+	virtual void Update_Data_To_Render();
+	virtual void Display() const;
+};
+
 class OpenGLCircle : public OpenGLObject
 {public: typedef OpenGLObject Base;
 	Vector3 pos=Vector3::Zero();

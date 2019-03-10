@@ -159,6 +159,37 @@ void OpenGLTriangle::Display() const
 }
 
 //////////////////////////////////////////////////////////////////////////
+////OpenGLPolygon
+void OpenGLPolygon::Initialize()
+{
+	Base::Initialize();
+	Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("vpos"));
+}
+
+void OpenGLPolygon::Update_Data_To_Render()
+{
+	if(!Update_Data_To_Render_Pre())return;
+	for(int i=0;i<vtx.size();i++)OpenGL_Vertex4(vtx[i],opengl_vertices);	////position, 4 floats
+	Set_OpenGL_Vertices();
+	Set_OpenGL_Vertex_Attribute(0,4,4,0);	////position
+	Update_Data_To_Render_Post();	
+}
+
+void OpenGLPolygon::Display() const
+{
+	std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[0];
+	shader->Begin();
+	glPushAttrib(GL_LINE_BIT);
+	Bind_Uniform_Block_To_Ubo(shader,"camera");
+	glLineWidth(line_width);
+	shader->Set_Uniform_Vec4f("color",color.rgba);
+	glBindVertexArray(vao);
+	glDrawArrays(GL_LINE_LOOP,0,vtx_size/4);
+	glPopAttrib();
+	shader->End();
+}
+
+//////////////////////////////////////////////////////////////////////////
 ////OpenGLCircle
 
 void OpenGLCircle::Initialize()

@@ -19,6 +19,7 @@ template<int d> class ToolkitDriver : public Driver, public OpenGLViewer
 	OpenGLTriangleMesh* opengl_tri_mesh=nullptr;						////bunny
 	OpenGLSegmentMesh* opengl_vectors=nullptr;							////vector field
 	Array<OpenGLSphere*> opengl_spheres;								////spheres
+	OpenGLPolygon* opengl_polygon=nullptr;
 
 public:
 	virtual void Initialize()
@@ -61,6 +62,17 @@ public:
 			opengl_sphere->Set_Data_Refreshed();
 			opengl_sphere->Initialize();
 			opengl_spheres.push_back(opengl_sphere);}
+
+		////initialize polygon
+		opengl_polygon=Add_Interactive_Object<OpenGLPolygon>();
+		opengl_polygon->vtx.push_back(Vector3::Zero());
+		opengl_polygon->vtx.push_back(Vector3::Unit(0)*(real)2);
+		opengl_polygon->vtx.push_back(Vector3::Unit(0)*(real)2+Vector3::Unit(1)*(real)1);
+		opengl_polygon->vtx.push_back(Vector3::Unit(1)*(real)1);
+		Set_Color(opengl_polygon,OpenGLColor(.0,1.,1.,1.));
+		Set_Line_Width(opengl_polygon,4.f);
+		opengl_polygon->Set_Data_Refreshed();
+		opengl_polygon->Initialize();
 
 		////set lights
 		auto dir_light=OpenGLUbos::Add_Directional_Light(glm::vec3(-1.f,-.1f,-.2f));
