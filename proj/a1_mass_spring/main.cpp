@@ -5,7 +5,6 @@
 //#####################################################################
 #include <iostream>
 #include <cstdio>
-#include "MassSpringDriver.h"
 #include "MassSpringInteractiveDriver.h"
 
 #ifndef __Main_cpp__
