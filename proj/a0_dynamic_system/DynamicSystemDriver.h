@@ -29,15 +29,6 @@ public:
 	////synchronize simulation data to visualization data, called in OpenGLViewer::Initialize()
 	virtual void Initialize_Data()
 	{
-		////initialize a sphere to visualize the particle
-		OpenGLSphere* opengl_sphere=Add_Interactive_Object<OpenGLSphere>();
-		opengl_sphere->pos=Vector3::Zero();
-		opengl_sphere->radius=(real).1;
-		Set_Color(opengl_sphere,OpenGLColor(.0,1.,.0,1.));
-		opengl_sphere->Set_Data_Refreshed();
-		opengl_sphere->Initialize();
-		opengl_spheres.push_back(opengl_sphere);
-
 		////initialize a segment mesh to visualize the trace
 		opengl_trace=Add_Interactive_Object<OpenGLSegmentMesh>();
 		opengl_trace->mesh.Elements().resize(1);
@@ -47,15 +38,27 @@ public:
 		opengl_trace->Set_Data_Refreshed();
 		opengl_trace->Initialize();
 
+		////initialize a sphere to visualize the particle
+		OpenGLSphere* opengl_sphere=Add_Interactive_Object<OpenGLSphere>();
+		opengl_sphere->pos=Vector3::Zero();
+		opengl_sphere->radius=(real).1;
+		Set_Color(opengl_sphere,OpenGLColor(.0,1.,.0,1.));
+		opengl_sphere->Set_Data_Refreshed();
+		opengl_sphere->Initialize();
+		opengl_spheres.push_back(opengl_sphere);
+
 		////set OpenGL rendering environments
 		auto dir_light=OpenGLUbos::Add_Directional_Light(glm::vec3(-1.f,-.1f,-.2f));
 		OpenGLUbos::Set_Ambient(glm::vec4(.1f,.1f,.1f,1.f));
 		OpenGLUbos::Update_Lights_Ubo();
 	}
 
-	///HW0 TODO: your implementation: update position and velocity of the particle
+	///HW0 TODO: your implementation: update position and velocity of the particle for a timestep
 	void Advance(const real dt)
 	{
+		//////////////////////////////////////////////////////////////////////////
+		////sample code for a Lorenz system
+		////reference: https://en.wikipedia.org/wiki/Lorenz_system
 		real sigma=(real)10;
 		real rho=28;
 		real beta=(real)8/(real)3;
@@ -65,6 +68,13 @@ public:
 		velocity[2]=position[0]*position[1]-beta*position[2];
 		
 		position+=velocity*dt;
+		//////////////////////////////////////////////////////////////////////////
+
+		//////////////////////////////////////////////////////////////////////////
+		////Implement your customized dynamic system; Comment out the previous part
+		/* Your implementation*/
+
+		/* Your implementation*/
 	}
 
 	void Sync_Simulation_And_Visualization_Data()

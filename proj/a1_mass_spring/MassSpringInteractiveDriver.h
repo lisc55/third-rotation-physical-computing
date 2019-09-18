@@ -3,63 +3,99 @@
 // Dartmouth COSC 89.18/189.02: Computational Methods for Physical Systems, Assignment starter code
 // Contact: Bo Zhu (bo.zhu@dartmouth.edu)
 //#####################################################################
-#ifndef __MassSpringDriver_h__
-#define __MassSpringDriver_h__
+#ifndef __MassSpringInteractiveDriver_h__
+#define __MassSpringInteractiveDriver_h__
 #include <memory>
 #include "Common.h"
 #include "Mesh.h"
 #include "Driver.h"
 #include "SoftBodyMassSpring.h"
+#include "OpenGLMesh.h"
+#include "OpenGLCommon.h"
+#include "OpenGLWindow.h"
+#include "OpenGLViewer.h"
+#include "OpenGLMarkerObjects.h"
+#include "OpenGLParticles.h"
 
-template<int d> class MassSpringDriver : public Driver
+template<int d> class MassSpringInteractivDriver : public Driver, public OpenGLViewer
 {using VectorD=Vector<real,d>;using VectorDi=Vector<int,d>;using Base=Driver;
 public:
 	SoftBodyMassSpring<d> soft_body;
+	const real dt=(real).02;
 
-	////Mesh data for visualization only
+	////mesh data for visualization only
 	std::shared_ptr<SegmentMesh<d> > vis_segment_mesh=nullptr;
 	std::shared_ptr<TriangleMesh<d> > vis_triangle_mesh=nullptr;
+
+	////visualization data
+	OpenGLSegmentMesh* opengl_segments=nullptr;							////vector field
+	Array<OpenGLSphere*> opengl_spheres;								////spheres
+
+	virtual void Initialize(){OpenGLViewer::Initialize();}
+	virtual void Run(){OpenGLViewer::Run();}
+	virtual void Initialize_Data()
+	{
+		Initialize_Simulation_Data();
+		Initialize_OpenGL_Data();
+	}
+
+	void Initialize_OpenGL_Data()
+	{		
+		////initialize a segment mesh to visualize the trace
+		opengl_segments=Add_Interactive_Object<OpenGLSegmentMesh>();
+		opengl_segments->mesh.Vertices().resize(soft_body.particles.Size());
+		for(int i=0;i<soft_body.particles.Size();i++){
+			opengl_segments->mesh.Vertices()[i]=soft_body.particles.X(i);}
+		opengl_segments->mesh.Elements().resize(soft_body.springs.size());
+		for(int i=0;i<soft_body.springs.size();i++){
+			opengl_segments->mesh.Elements()[i]=soft_body.springs[i];}
+		opengl_segments->Set_Data_Refreshed();
+		opengl_segments->Initialize();	
+
+		////initialize a sphere to visualize the particle
+		for(int i=0;i<soft_body.particles.Size();i++){
+			OpenGLSphere* opengl_sphere=Add_Interactive_Object<OpenGLSphere>();
+			opengl_sphere->pos=soft_body.particles.X(i);
+			opengl_sphere->radius=(real).02;
+			Set_Color(opengl_sphere,OpenGLColor(.0,1.,.0,1.));
+			opengl_sphere->Set_Data_Refreshed();
+			opengl_sphere->polygon_mode=PolygonMode::Fill;
+			opengl_sphere->Initialize();
+			opengl_spheres.push_back(opengl_sphere);}
+
+		////set OpenGL rendering environments
+		auto dir_light=OpenGLUbos::Add_Directional_Light(glm::vec3(-1.f,-.1f,-.2f));
+		OpenGLUbos::Set_Ambient(glm::vec4(.1f,.1f,.1f,1.f));
+		OpenGLUbos::Update_Lights_Ubo();
+	}
+
+	void Sync_Simulation_And_Visualization_Data()
+	{
+		////update and sync data for segments
+		for(int i=0;i<opengl_segments->mesh.Vertices().size();i++){
+			opengl_segments->mesh.Vertices()[i]=soft_body.particles.X(i);}
+		opengl_segments->Set_Data_Refreshed();
+
+		////update and sync data for spheres
+		for(int i=0;i<opengl_spheres.size();i++){
+			opengl_spheres[i]->pos=soft_body.particles.X(i);
+			opengl_spheres[i]->Set_Data_Refreshed();}
+	}
+
+	////update simulation and visualization for each time step
+	virtual void Toggle_Next_Frame()
+	{
+		Advance_One_Time_Step(dt,time+dt);
+		Sync_Simulation_And_Visualization_Data();
+		OpenGLViewer::Toggle_Next_Frame();
+	}
 
 	virtual void Advance_One_Time_Step(const real dt,const real time)
 	{
 		soft_body.Advance(dt);
 	}
-
-	virtual void Write_Output_Files(const int frame)
-	{	
-		Base::Write_Output_Files(frame);
-		
-		////Write particles
-		{std::string file_name=frame_dir+"/particles";
-		soft_body.particles.Write_To_File_3d(file_name);}
-
-		////Write springs
-		if(vis_segment_mesh!=nullptr){	////for 2D
-			std::string file_name=frame_dir+"/segment_mesh";
-			vis_segment_mesh->Write_To_File_3d(file_name);
-			////Write spring color based on the length of each edge
-			std::string color_file_name=file_name+"_color";
-			Array<real> spring_colors(vis_segment_mesh->elements.size());
-			for(size_type i=0;i<spring_colors.size();i++){
-				Vector2i& s=vis_segment_mesh->elements[i];
-				real length=(vis_segment_mesh->Vertices()[s[0]]-vis_segment_mesh->Vertices()[s[1]]).norm();
-				real rest_length=soft_body.rest_length[i];
-				spring_colors[i]=(length-rest_length)/rest_length;}
-			File::Write_Binary_Array_To_File(color_file_name,&spring_colors[0],(int)spring_colors.size());}
-
-		if(vis_triangle_mesh!=nullptr){	////for 3D
-			std::string file_name=frame_dir+"/triangle_mesh";
-			vis_triangle_mesh->Write_To_File_3d(file_name);}
-
-		////Write BC
-		{std::string file_name=frame_dir+"/psi_D";
-		Particles<d> psi_D_particles;
-		for(auto p:soft_body.boundary_nodes){int idx=p.first;
-			int i=psi_D_particles.Add_Element();psi_D_particles.X(i)=soft_body.particles.X(idx);}
-		psi_D_particles.Write_To_File_3d(file_name);}
-	}
 	
-	virtual void Initialize()
+	virtual void Initialize_Simulation_Data()
 	{
 		switch(test){
 		case 1:{	////rod, for both 2D and 3D
@@ -77,7 +113,7 @@ public:
 		}break;
 		case 2:{	////cloth, for 3D only
 			////create a cloth mesh
-			real length=(real)1;int width=8*scale;int height=12*scale;real step=length/(real)width;
+			real length=(real)1;int width=4*scale;int height=6*scale;real step=length/(real)width;
 			TriangleMesh<d> cloth_mesh;
 			Build_Cloth_Mesh(width,height,step,&cloth_mesh,0,2);
 			int n=(int)cloth_mesh.Vertices().size();
@@ -110,12 +146,11 @@ public:
 		case 4:{
 			/* Your implementation */
 		}break;
-		
 		}
 
-		////set the visualization mesh
-		vis_segment_mesh.reset(new SegmentMesh<d>(soft_body.particles.XPtr()));
-		vis_segment_mesh->elements=soft_body.springs;
+		//////set the visualization mesh
+		//vis_segment_mesh.reset(new SegmentMesh<d>(soft_body.particles.XPtr()));
+		//vis_segment_mesh->elements=soft_body.springs;
 
 		soft_body.Initialize();
 	}

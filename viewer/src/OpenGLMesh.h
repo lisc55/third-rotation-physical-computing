@@ -166,6 +166,7 @@ class OpenGLTriangleMesh : public OpenGLMesh<TriangleMesh<3> >
 	virtual void Update_Data_To_Render()
 	{
 		if(!Update_Data_To_Render_Pre())return;
+		Update_Polygon_Mode();
 
 		switch(shading_mode){
 		case ShadingMode::None:

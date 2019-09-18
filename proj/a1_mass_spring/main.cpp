@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cstdio>
 #include "MassSpringDriver.h"
+#include "MassSpringInteractiveDriver.h"
 
 #ifndef __Main_cpp__
 #define __Main_cpp__
@@ -21,11 +22,9 @@ int main(int argc,char* argv[])
 			test=atoi(argv[++i]);}}
 	std::cout<<"[Mass spring simulation driver arguments]: -o ="<<output_dir<<", -test ="<<test<<std::endl;
 
-	MassSpringDriver<3> driver;
+	MassSpringInteractivDriver<3> driver;
 	driver.scale=1;
-	driver.output_dir=output_dir;
 	driver.test=test;
-	driver.last_frame=500;
 
 	driver.Initialize();
 	driver.Run();	
