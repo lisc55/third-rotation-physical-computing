@@ -43,7 +43,7 @@ The executables are generated in the Release or Debug folder under the subdirect
 
 **Substep 2.2: Run setup.sh/bat**
 
-    .\scripts\setup.bat [Windows]
+    .\scripts\setup.bat [Windows] (Attention: This is for those who use Visual Studio 2017. If you are using VS 2019, please change the 3rd line of setup.bat to "cmake -G "Visual Studio 16 2019" ..")
     ./scripts/setup.sh [Linux/OSX]
 
 ### Step 3: Compile and run the code
@@ -93,7 +93,6 @@ This will build the viewer as well as all assignments and examples.
 
 You'll find the assignment executables in their respective subfolders in the `build` folder. If you want to run an assignment (e.g., assignment 1) and look at the result the process is the following
 
-    ./proj/a1_mass_spring/mass_spring -o "some output folder" -test "the number of the test you want to run"
-    ./viewer/viewer/opengl_viewer -o "the output folder you specified above"
+    ./proj/a1_mass_spring/a1_mass_spring -test "the number of the test you want to run"
     
 For more details, you can look at the `setup` and `run_assignment` scripts!
