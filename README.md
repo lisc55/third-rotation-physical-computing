@@ -93,7 +93,6 @@ This will build the viewer as well as all assignments and examples.
 
 You'll find the assignment executables in their respective subfolders in the `build` folder. If you want to run an assignment (e.g., assignment 1) and look at the result the process is the following
 
-    ./proj/a1_mass_spring/mass_spring -o "some output folder" -test "the number of the test you want to run"
-    ./viewer/viewer/opengl_viewer -o "the output folder you specified above"
+    ./proj/a1_mass_spring/a1_mass_spring -test "the number of the test you want to run"
     
 For more details, you can look at the `setup` and `run_assignment` scripts!
