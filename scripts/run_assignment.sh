@@ -7,13 +7,10 @@ then
 fi
 
 assignment=$1
-assignment_name=${assignment:3}
+test=$2
 
 cmake --build ./build --config Release --target opengl_viewer
-cmake --build ./build --config Release --target $assignment_name
+cmake --build ./build --config Release --target $assignment
 
-./build/proj/$assignment/$assignment_name -o build/proj/$assignment_name/output
+./build/proj/$assignment/$assignment -test $test
 
-./build/viewer/viewer/opengl_viewer -o build/proj/$assignment_name/output
-
-command -v ffmpeg >/dev/null 2>&1 && ffmpeg -start_number 0 -framerate 50 -i build/proj/$assignment_name/output/_images/%04d.png  -vcodec libx264 -crf 25 -pix_fmt yuv420p -y $assignment_name.mp4
