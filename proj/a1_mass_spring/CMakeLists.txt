@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.7)
 
 #initialize project
-set(proj_name mass_spring)
+set(proj_name a1_mass_spring)
 project(${proj_name})
 
 #set paths

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.7)
 
 #initialize project
-set(proj_name particle_physics)
+set(proj_name a2_particle_physics)
 project(${proj_name})
 
 #set paths
