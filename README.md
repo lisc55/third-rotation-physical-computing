@@ -43,7 +43,7 @@ The executables are generated in the Release or Debug folder under the subdirect
 
 **Substep 2.2: Run setup.sh/bat**
 
-    .\scripts\setup.bat [Windows]
+    .\scripts\setup.bat [Windows] (Attention: This is for those who use Visual Studio 2017. If you are using VS 2019, please change the 3rd line of setup.bat to "cmake -G "Visual Studio 16 2019" ..")
     ./scripts/setup.sh [Linux/OSX]
 
 ### Step 3: Compile and run the code
