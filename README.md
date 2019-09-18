@@ -55,8 +55,10 @@ To test if everything works correctly you can run:
 
 This will:
 
-- Compile the code for the hello world project and any dependencies
+- Compile the code for the a0_dynamic_system project and any dependencies
 - Run the assignment and visualize the real-time simulation in the OpenGL window (press 'p' to start/stop simulation)
+
+![Visulization of the Lorenz particle trajectory in the OpenGL Viewer](doc/img/lorenz_system.png)
 
 ### Step 4: Start implementing!
 
