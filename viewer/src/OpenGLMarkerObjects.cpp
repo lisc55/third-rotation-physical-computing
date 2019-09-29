@@ -325,10 +325,10 @@ void OpenGLMarkerTriangleMesh::Display() const
 
 void OpenGLSphere::Initialize()
 {
+	Initialize_Sphere_Mesh(radius,&mesh);
+
 	Base::Initialize();
 	Add_Shader_Program(OpenGLShaderLibrary::Get_Shader("vpos_model_vnormal_dl_fast"));
-
-	Initialize_Sphere_Mesh(radius,&mesh);
 
 	Update_Mesh_Data_To_Render();
 }
