@@ -255,6 +255,7 @@ void OpenGLSolidCircle::Update_Data_To_Render()
 
 void OpenGLSolidCircle::Display() const
 {
+	if(!visible)return;
 	Update_Polygon_Mode();
 	std::shared_ptr<OpenGLShaderProgram> shader=shader_programs[0];
 	shader->Begin();
