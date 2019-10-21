@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.7)
 
 #initialize project
-set(proj_name grid_fluid)
+set(proj_name a3_grid_fluid)
 project(${proj_name})
 
 #set paths
