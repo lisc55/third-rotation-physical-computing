@@ -64,7 +64,7 @@ public:
 
 			for(int j=0;j<d;j++){
 				VectorD u_1=u[Idx(node-VectorDi::Unit(j))];
-				VectorD u_2=u[Idx(node+VectorDi::Unit(i))];
+				VectorD u_2=u[Idx(node+VectorDi::Unit(j))];
 				div_u[i]+=(u_2[j]-u_1[j])/(2*dx);}
 		}
 
