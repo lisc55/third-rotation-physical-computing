@@ -10,14 +10,14 @@ template<int d> class MultiCopter
 using Vector2=Vector<real,2>;using Matrix2=Matrix<real,2>;
 public:
 	RigidBody<d> rigid_body;
-	Array<VectorD> rotor_pos;
-	Array<VectorD> rotor_dir;
+	Array<VectorD> body_rotor_pos;
+	Array<VectorD> body_rotor_dir;
 	int thrust_flag;
-	Array<VectorD> thrust_vec;
+	Array<VectorD> body_thrust_vec;
 
 	// Parameters
 	real mass;
-	VectorD inertia;
+	VectorD body_inertia;
 	real arm_length;
 	real lambda;
 	real g;
@@ -27,9 +27,9 @@ public:
 	{
 		thrust_flag = flag;
 		mass = 0.068;
-		inertia(0) = 1e-3 * 0.0686;
-		inertia(1) = 1e-3 * 0.0920;
-		inertia(2) = 1e-3 * 0.1366;
+		body_inertia(0) = 1e-3 * 0.0686;
+		body_inertia(1) = 1e-3 * 0.0920;
+		body_inertia(2) = 1e-3 * 0.1366;
 		arm_length = 0.0624;
 		lambda = 0.0024;
 		g = 9.81;
@@ -88,9 +88,9 @@ public:
 
 	void Add_Rotor(const Vector3& pos,const Vector3& dir)
 	{
-		rotor_pos.push_back(pos);
-		rotor_dir.push_back(dir);
-		thrust_vec.push_back(VectorD::Zero());
+		body_rotor_pos.push_back(pos);
+		body_rotor_dir.push_back(dir);
+		body_thrust_vec.push_back(VectorD::Zero());
 	}
 
 	Vector3 World_Coord(const Vector3& local_pos)
@@ -178,7 +178,7 @@ public:
 		}
 
 		for (int i = 0; i < 4; ++i) {
-			thrust_vec[i] = thrusts[i] * -VectorD::UnitZ();
+			body_thrust_vec[i] = thrusts[i] * body_rotor_dir[i];
 		}
 
 		Advance_Rigid_Body(dt);
@@ -200,35 +200,66 @@ public:
 		const MatrixD old_R = rigid_body.R;
 
 		////Linear motion
-		// -- LV1 TASK: 3.1: update net force --
-		VectorD net_force=VectorD::Zero();
-		
+		// -- LV1 TASK: 3.1: compute the net force and update the linear motion. --
+		// net_force should be the sum of the gravitational force and thrusts in the
+		// *world* frame.
+		//
+		// You can use VectorD::UnitZ() to define a unit vector (0, 0, 1). The real variables
+		// mass and g defines the mass of the copter and the gravitational acceleration, which
+		// you can access directly here.
+		//
+		// body_thrust_vec is a vector of length 4 which stores the thrust from each propeller
+		// in the *body* frame. You will need to convert them into the *world* frame by using
+		// the rotational matrix old_R.
+		//
+		// After you compute the net force, use the Forward Euler method to update rigid_body.position
+		// and rigid_body.velocity.
+		VectorD net_force = VectorD::Zero();
+
 		// -- Your implementation starts --
 		// -- Your implementation ends --
-
-		rigid_body.position = old_p + dt * old_v;
-		rigid_body.velocity = old_v + dt * net_force/mass;
 
 		////Angular motion
-		// -- LV1 TASK 3.2: update net torque --
-		VectorD net_torque = VectorD::Zero();
-		
-		// -- Your implementation starts --
-		// -- Your implementation ends --
-		VectorD n = old_omega * dt;
-		real n_len = n.norm();
-		if(n_len<1e-6)n=VectorD::UnitZ();
-		else n/=n_len;
-		rigid_body.orientation = Eigen::AngleAxis<real>(n_len, n) * old_orientation;
+		// -- LV1 TASK 3.2: compute the net torque and update the angular motion.
+		// body_net_torque should be the sum of the induced torques from the four thrusts.
+		// This includes both the torque w.r.t. the c.o.m and the spinning torque induced
+		// by the rotation of the propeller.
+		//
+		// For each rotor i, you can use body_rotor_pos[i] to access its location in the *body*
+		// frame. Taking a cross produce of it and body_thrust_vec[i] will give you the torque
+		// w.r.t. the c.o.m. in the *body* frame.
+		//
+		// The spinning torque is computed as body_thrust_vec[i] * lambda * (+/-1). Whether it is
+		// +1 or -1 depends on the spinning direction of the propeller.
+		//
+		// Once you compute body_net_torque, follow the steps below to update the angular motion:
+		// - old_omega is the angular velocity so old_omega * dt defines the instantaneous rotation
+		//   within this time step. Use it to update rigid_body.orientation.
+		// - Update rigid_body.omega by computing the angular acceleration. Recall that the Euler's
+		//   equation is:
+		//	 I\dot{w} + w x Iw = tau
+		//   This equation is true in *both world and body frames*. So you can choose to update omega
+		//	 in either the world or body frames as long as you are consistent. Assuming you do everything
+		//	 in the body frame:
+		//   * tau = body_net_torque that you just computed;
+		//	 * I = body_inertia which you can directly access;
+		//   * w = old_omega but represented in the *body* frame. You need to use old_R to do the conversion.
+		//   * \dot{w} = the time derivative of old_omega but in the *body* frame. Use it and the Forward
+		//   Euler method to compute the new omega in the *body* frame and convert it back to rigid_body.omega
+		//	 in the *world* frame.
+		//
+		// Alternatively, you can do everything in the world frame. You will need to convert body_net_torque and
+		// body_inertia to the *world* frame though.
 
-		VectorD old_body_omega = old_R.transpose() * old_omega;
-		VectorD body_omega_rate = (net_torque - old_body_omega.cross(old_body_omega.cwiseProduct(inertia))).cwiseQuotient(inertia);
-		rigid_body.omega = rigid_body.orientation.toRotationMatrix() * (old_body_omega + dt * body_omega_rate);
+		VectorD body_net_torque = VectorD::Zero();
+
+		// -- Your implementation starts --
+		// -- Your implementation ends --	
 	}
 
 	//////////////////////////////////////////////////////////////////////////
 	////LV2: PD Controller
-	
+
 	Vector2 XyController(const real yaw, const Vector2& xy_ref, const Vector2& xy, const Vector2& v)
 	{
 		const Vector2 xy_error = xy_ref - xy;
@@ -251,7 +282,7 @@ public:
 
 		pitch = -P * x_err - D * dx_err;
 		roll = P * y_err + D * dy_err;
-		
+
 		return Vector2(pitch, roll);
 	}
 
@@ -264,7 +295,7 @@ public:
 
 		// -- Your implementation starts --
 		// -- Your implementation ends --
-		
+
 		return total_control_thrust;
 	}
 
@@ -274,7 +305,7 @@ public:
 		const real P_yaw = 0.004;
 		const real D_yaw = 0.3 * 0.004;
 		real total_control_torque = 0.0;
-		
+
 		// -- Your implementation starts --
 		// -- Your implementation ends --
 

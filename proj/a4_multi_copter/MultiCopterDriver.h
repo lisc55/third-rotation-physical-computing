@@ -52,7 +52,7 @@ public:
 		opengl_copter->mesh.elements[0]=Vector2i(0,2);
 		opengl_copter->mesh.elements[1]=Vector2i(1,3);
 		opengl_copter->line_width=2.f;
-		*opengl_copter->mesh.vertices=copter.rotor_pos;
+		*opengl_copter->mesh.vertices=copter.body_rotor_pos;
 
 		opengl_copter->Set_Data_Refreshed();
 		opengl_copter->Initialize();
@@ -60,8 +60,8 @@ public:
 		opengl_circles=Add_Interactive_Object<OpenGLSegmentMesh>();
 		SegmentMesh<3>& mesh=opengl_circles->mesh;
 		
-		for(int i=0;i<copter.rotor_pos.size();i++){
-			Vector3 center=copter.rotor_pos[i];
+		for(int i=0;i<copter.body_rotor_pos.size();i++){
+			Vector3 center=copter.body_rotor_pos[i];
 			real r=.02f;int n=16;
 			real theta=3.1415927f*2.f/(real)n;
 			int start=(*mesh.vertices).size();
@@ -89,8 +89,8 @@ public:
 
 	void Sync_Simulation_And_Visualization_Data()
 	{
-		for(int i=0;i<copter.rotor_pos.size();i++){
-			(*opengl_copter->mesh.vertices)[i]=copter.World_Coord(copter.rotor_pos[i]);}
+		for(int i=0;i<copter.body_rotor_pos.size();i++){
+			(*opengl_copter->mesh.vertices)[i]=copter.World_Coord(copter.body_rotor_pos[i]);}
 		opengl_copter->Set_Data_Refreshed();
 
 		for(int i=0;i<(*opengl_circles->mesh.vertices).size();i++){

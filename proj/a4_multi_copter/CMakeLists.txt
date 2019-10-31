@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.7)
 
 #initialize project
-set(proj_name a3_multi_copter)
+set(proj_name a4_multi_copter)
 project(${proj_name})
 
 #set paths
