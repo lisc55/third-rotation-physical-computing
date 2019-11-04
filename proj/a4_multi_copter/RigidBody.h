@@ -9,7 +9,6 @@ template<int d> class RigidBody
 public:
 	VectorD position=VectorD::Zero();
 	VectorD velocity=VectorD::Zero();
-	Eigen::AngleAxis<real> orientation=Eigen::AngleAxis<real>(0.0, VectorD::UnitZ());
 	MatrixD R=MatrixD::Identity();
 	MatrixD Rt=MatrixD::Identity();
 	VectorD omega=VectorD::Zero();

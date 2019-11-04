@@ -6,8 +6,9 @@
 //////////////////////////////////////////////////////////////////////////
 ////MultiCopter simulator
 template<int d> class MultiCopter
-{using VectorD=Vector<real,d>;using VectorDi=Vector<int,d>;using MatrixD=Matrix<real,d>;
-using Vector2=Vector<real,2>;using Matrix2=Matrix<real,2>;
+{
+	using VectorD = Vector<real, d>; using VectorDi = Vector<int, d>; using MatrixD = Matrix<real, d>;
+	using Vector2 = Vector<real, 2>; using Matrix2 = Matrix<real, 2>;
 public:
 	RigidBody<d> rigid_body;
 	Array<VectorD> body_rotor_pos;
@@ -86,7 +87,7 @@ public:
 		// std::cout << "Diff between R and R2 = " << (R - R2).norm() << std::endl;
 	}
 
-	void Add_Rotor(const Vector3& pos,const Vector3& dir)
+	void Add_Rotor(const Vector3& pos, const Vector3& dir)
 	{
 		body_rotor_pos.push_back(pos);
 		body_rotor_dir.push_back(dir);
@@ -184,7 +185,8 @@ public:
 		Advance_Rigid_Body(dt);
 
 		// Post processing.
-		rigid_body.R = rigid_body.orientation.toRotationMatrix();
+		Eigen::JacobiSVD<MatrixD> svd(rigid_body.R, Eigen::ComputeFullU | Eigen::ComputeFullV);
+		rigid_body.R = svd.matrixU() * svd.matrixV().transpose();
 		rigid_body.Rt = rigid_body.R.transpose();
 		t += dt;
 	}
@@ -195,7 +197,6 @@ public:
 	{
 		const VectorD old_p = rigid_body.position;
 		const VectorD old_v = rigid_body.velocity;
-		const Eigen::AngleAxis<real> old_orientation = rigid_body.orientation;
 		const VectorD old_omega = rigid_body.omega;
 		const MatrixD old_R = rigid_body.R;
 
@@ -233,23 +234,20 @@ public:
 		// +1 or -1 depends on the spinning direction of the propeller.
 		//
 		// Once you compute body_net_torque, follow the steps below to update the angular motion:
-		// - old_omega is the angular velocity so old_omega * dt defines the instantaneous rotation
-		//   within this time step. Use it to update rigid_body.orientation.
+		// - Use the relation \dot{R} = old_omega x old_R and new_R = old_R + dt * \dot{R} to update R.
 		// - Update rigid_body.omega by computing the angular acceleration. Recall that the Euler's
 		//   equation is:
 		//	 I\dot{w} + w x Iw = tau
 		//   This equation is true in *both world and body frames*. So you can choose to update omega
 		//	 in either the world or body frames as long as you are consistent. Assuming you do everything
-		//	 in the body frame:
-		//   * tau = body_net_torque that you just computed;
-		//	 * I = body_inertia which you can directly access;
-		//   * w = old_omega but represented in the *body* frame. You need to use old_R to do the conversion.
-		//   * \dot{w} = the time derivative of old_omega but in the *body* frame. Use it and the Forward
-		//   Euler method to compute the new omega in the *body* frame and convert it back to rigid_body.omega
-		//	 in the *world* frame.
+		//	 in the world frame:
+		//   * tau = net torque in the world frame. To get its value, you need to use old_R to convert
+		//		 body_net_torque;
+		//	 * I = inertia in the world frame. Use I = R * body_inertia * R^\top to compute its value;
+		//   * w = old_omega.
+		//   * \dot{w} = the time derivative of omega. Use new_omega = old_omega + dt * \dot{w} to update omega.
 		//
-		// Alternatively, you can do everything in the world frame. You will need to convert body_net_torque and
-		// body_inertia to the *world* frame though.
+		// Alternatively, you can do everything in the body frame.
 
 		VectorD body_net_torque = VectorD::Zero();
 
