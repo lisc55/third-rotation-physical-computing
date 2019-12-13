@@ -184,7 +184,7 @@ void OpenGLPolygon::Display() const
 	glLineWidth(line_width);
 	shader->Set_Uniform_Vec4f("color",color.rgba);
 	glBindVertexArray(vao);
-	glDrawArrays(GL_LINE_LOOP,0,vtx_size/4);
+	glDrawArrays(GL_POLYGON,0,vtx_size/4);
 	glPopAttrib();
 	shader->End();
 }
