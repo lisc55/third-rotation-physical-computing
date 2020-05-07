@@ -25,7 +25,7 @@ public:
 	////Body force
 	VectorD g=VectorD::Unit(1)*(real)-1.;
 	
-	enum class TimeIntegration{ExplicitEuler,ImplicitEuler} time_integration=TimeIntegration::ExplicitEuler;
+	enum class TimeIntegration{ExplicitEuler,ImplicitEuler} time_integration=TimeIntegration::ImplicitEuler;
 
 	////Implicit time integration
 	SparseMatrixT K;
@@ -171,7 +171,25 @@ public:
 		b.fill((real)0);
 
 		/* Your implementation start */
+		for (int i = 0; i < particles.Size(); i++) {
+			MatrixD M_i;
+			for (int k = 0; k < d; k++) M_i(k, k) = particles.M(i);
+			SparseFunc::Add_Block<d,MatrixD>(K, i, i, M_i);
+			Add_Block(b, i, particles.M(i) * particles.V(i));
+			Add_Block(b, i, dt * particles.F(i));
+		}
 
+		MatrixD K_s, D_s;
+		for (int s = 0; s < springs.size(); s++) {
+			int i = springs[s][0];
+			int j = springs[s][1];
+			Compute_Ks_Block(s, K_s);
+			Add_Block_Helper(K, i, j, -dt * dt * K_s);
+			Compute_Kd_Block(s, D_s);
+			Add_Block_Helper(K, i, j, -dt * D_s);
+			Add_Block(b, i, -dt * D_s * (particles.V(i) - particles.V(j)));
+			Add_Block(b, j, -dt * D_s * (particles.V(j) - particles.V(i)));
+		}
 		/* Your implementation end */
 	}
 
@@ -184,7 +202,13 @@ public:
 	void Compute_Ks_Block(const int s,MatrixD& Ks)
 	{
 		/* Your implementation start */
-
+		int i = springs[s][0];
+		int j = springs[s][1];
+		real k_s = ks[s];
+		real l_0 = rest_length[s];
+		VectorD l_ij = particles.X(j) - particles.X(i);
+		real l_norm = l_ij.norm();
+		Ks = k_s * ((l_0 / l_norm - 1) * MatrixD::Identity() - l_0 / (l_norm * l_norm * l_norm) * l_ij * l_ij.transpose());
 		/* Your implementation end */
 	}
 
@@ -194,7 +218,12 @@ public:
 	void Compute_Kd_Block(const int s,MatrixD& Kd)
 	{
 		/* Your implementation start */
-
+		int i = springs[s][0];
+		int j = springs[s][1];
+		real k_d = kd[s];
+		VectorD l_ij = particles.X(j) - particles.X(i);
+		real l_norm = l_ij.norm();
+		Kd = -k_d / (l_norm * l_norm) * l_ij * l_ij.transpose();
 		/* Your implementation end */
 	}
 
