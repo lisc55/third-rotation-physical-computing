@@ -12,7 +12,7 @@
 
 int main(int argc,char* argv[])
 {
-	int driver=1;
+	int driver=2;
 
 	switch(driver){
 	case 1:{

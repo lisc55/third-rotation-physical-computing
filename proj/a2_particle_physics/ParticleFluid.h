@@ -88,6 +88,17 @@ public:
 	bool Find_Nbs(const VectorD& pos,const Array<VectorD>& points,const real kernel_radius,/*returned result*/Array<int>& nbs) const
 	{
 		/* Your implementation start */
+		VectorDi cell = Cell_Coord(pos);
+		int ring_size = Pow(3, d);
+		for (int i = 0; i < ring_size; i++) {
+			auto iter = voxels.find(Nb_R(cell, i));
+			if (iter == voxels.end()) continue;
+			for (int idx : iter->second) {
+				if ((pos - points[idx]).norm() <= kernel_radius) {
+					nbs.push_back(idx);
+				}
+			}
+		}
 		/* Your implementation end */
 		return nbs.size()>0;
 	}
@@ -161,6 +172,11 @@ public:
 	void Update_Density()
 	{
 		/* Your implementation start */
+		for (int i = 0; i < particles.Size(); i++) {
+			for (int j : neighbors[i]) {
+				particles.D(i) += particles.M(j) * kernel.Wspiky(particles.X(i) - particles.X(j));
+			}
+		}
 		/* Your implementation end */
 	}
 
@@ -169,6 +185,9 @@ public:
 	void Update_Pressure()
 	{
 		/* Your implementation start */
+		for (int i = 0; i < particles.Size(); i++) {
+			particles.P(i) = pressure_density_coef * (particles.D(i) - density_0);
+		}
 		/* Your implementation end */
 	}
 
@@ -177,6 +196,11 @@ public:
 	void Update_Pressure_Force()
 	{
 		/* Your implementation start */
+		for (int i = 0; i < particles.Size(); i++) {
+			for (int j : neighbors[i]) {
+				particles.F(i) -= (particles.P(i) + particles.P(j)) / 2 * particles.M(j) / particles.D(j) * kernel.gradientWspiky(particles.X(i) - particles.X(j));
+			}
+		}
 		/* Your implementation end */
 	}
 
@@ -185,6 +209,11 @@ public:
 	void Update_Viscosity_Force()
 	{
 		/* Your implementation start */
+		for (int i = 0; i < particles.Size(); i++) {
+			for (int j : neighbors[i]) {
+				particles.F(i) += viscosity_coef * (particles.V(j) - particles.V(i)) * particles.M(j) / particles.D(j) * kernel.laplacianWvis(particles.X(i) - particles.X(j));
+			}
+		}
 		/* Your implementation end */
 	}
 
