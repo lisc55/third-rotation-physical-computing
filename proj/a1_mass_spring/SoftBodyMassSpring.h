@@ -92,7 +92,10 @@ public:
 
 		////Update particle velocity and position
 		/* Your implementation start */
-
+		for (int i = 0; i < particles.Size(); i++) {
+			particles.X(i) += dt * particles.V(i);
+			particles.V(i) += dt / particles.M(i) * particles.F(i);
+		}
 		/* Your implementation end */
 	}
 
@@ -101,10 +104,20 @@ public:
 	VectorD Spring_Force_Calculation(const int idx)
 	{
 		/* Your implementation start */
-
+		int i = springs[idx][0];
+		int j = springs[idx][1];
+		real k_s = ks[idx];
+		real k_d = kd[idx];
+		real l_0 = rest_length[idx];
+		VectorD l_ij = particles.X(j) - particles.X(i);
+		VectorD v_ij = particles.V(j) - particles.V(i);
+		VectorD n_ij = l_ij.normalized();
+		VectorD f_s = k_s * (l_ij.norm() - l_0) * n_ij;
+		VectorD f_d = k_d * (v_ij.dot(n_ij)) * n_ij;
+		return f_s + f_d;
 		/* Your implementation end */
 
-		//return VectorD::Zero();	////replace this line with your implementation
+		// return VectorD::Zero();	////replace this line with your implementation
 	}
 
 	//////////////////////////////////////////////////////////////////////////
@@ -120,7 +133,11 @@ public:
 
 		////Accumulate spring forces
 		/* Your implementation start */
-
+		for (int i = 0; i < springs.size(); i++) {
+			VectorD F = Spring_Force_Calculation(i);
+			particles.F(springs[i][0]) += F;
+			particles.F(springs[i][1]) -= F;
+		}
 		/* Your implementation end */
 
 		////Enforce boundary conditions
