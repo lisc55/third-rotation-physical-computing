@@ -50,6 +50,13 @@ public:
 	{
 		particle_environment_collision_pairs.clear();
 		/* Your implementation start */
+		for (int i = 0; i < particles.Size(); i++) {
+			for (int j = 0; j < env_objects.size(); j++) {
+				if (env_objects[j]->Phi(particles.X(i)) < particles.R(i)) {
+					particle_environment_collision_pairs.push_back(Vector2i(i, j));
+				}
+			}
+		}
 		/* Your implementation end */
 	}
 		
@@ -64,6 +71,9 @@ public:
 			VectorD collision_force=VectorD::Zero();
 
 			/* Your implementation start */
+			VectorD f_s = ks * (env_objects[j]->Phi(particles.X(i)) - particles.R(i)) * (-env_objects[j]->Normal(particles.X(i)));
+			VectorD f_d = kd * (particles.V(i).dot(env_objects[j]->Normal(particles.X(i)))) * (-env_objects[j]->Normal(particles.X(i)));
+			collision_force = f_s + f_d;
 			/* Your implementation end */
 			
 			particles.F(i)+=collision_force;
@@ -77,6 +87,13 @@ public:
 	{
 		particle_particle_collision_pairs.clear();
 		/* Your implementation start */
+		for (int i = 0; i < particles.Size(); i++) {
+			for (int j = 0; j < particles.Size(); j++) {
+				if ((particles.X(i) - particles.X(j)).norm() < particles.R(i) + particles.R(j)) {
+					particle_particle_collision_pairs.push_back(Vector2i(i, j));
+				}
+			}
+		}
 		/* Your implementation end */
 	}
 
@@ -91,6 +108,16 @@ public:
 			VectorD collision_force=VectorD::Zero();
 
 			/* Your implementation start */
+			real l_0 = particles.R(i) + particles.R(j);
+			VectorD l_ij = particles.X(j) - particles.X(i);
+			VectorD v_ij = particles.V(j) - particles.V(i);
+			VectorD n_ij = l_ij.normalized();
+			VectorD f_s = ks * (l_ij.norm() - l_0) * n_ij;
+			VectorD f_d = kd * (v_ij.dot(n_ij)) * n_ij;
+			collision_force = f_s + f_d;
+
+			particles.F(i) += collision_force;
+			particles.F(j) -= collision_force;
 			/* Your implementation end */
 		}
 
