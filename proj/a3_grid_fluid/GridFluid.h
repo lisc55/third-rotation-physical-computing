@@ -45,6 +45,11 @@ public:
 			u[i]=VectorD::Zero();
 
 			/*Your implementation starts*/
+			VectorD x = Pos(i);
+			VectorD pos = x - u_copy[i] * dt / 2;
+			u[i] = Interpolate(u_copy, pos);
+			pos = x - u[i] * dt;
+			u[i] = Interpolate(u_copy, pos);
 			/*Your implementation ends*/
 		}
 	}
@@ -77,6 +82,11 @@ public:
 				VectorDi node=Coord(i);
 
 				/*Your implementation starts*/
+				p[i] = -div_u[i] * dx2;
+				for (int j = 0; j < d; j++) {
+					p[i] += p[Idx(node - VectorDi::Unit(j))] + p[Idx(node + VectorDi::Unit(j))];
+				}
+				p[i] /= 2 * d;
 				/*Your implementation ends*/
 			}
 		}
@@ -88,6 +98,10 @@ public:
 			VectorD grad_p=VectorD::Zero();
 
 			/*Your implementation starts*/
+			for (int j = 0; j < d; j++) {
+				grad_p[j] = (p[Idx(node + VectorDi::Unit(j))] - p[Idx(node - VectorDi::Unit(j))]) / (2 * dx);
+			}
+			u[i] -= grad_p;
 			/*Your implementation ends*/
 		}
 	}
@@ -113,6 +127,7 @@ public:
 			vor[i]=(real)0;
 
 			/*Your implementation starts*/
+			vor[i] = (u[Idx(node + VectorDi::Unit(0))][1] - u[Idx(node - VectorDi::Unit(0))][1] - u[Idx(node + VectorDi::Unit(1))][0] + u[Idx(node - VectorDi::Unit(1))][0]) / (2 * dx);
 			/*Your implementation ends*/
 		}
 
@@ -124,6 +139,10 @@ public:
 			N[i]=VectorD::Zero();
 
 			/*Your implementation starts*/
+			for (int j = 0; j < d; j++) {
+				N[i][j] = (vor[Idx(node + VectorDi::Unit(j))] - vor[Idx(node - VectorDi::Unit(j))]) / (2 * dx);
+			}
+			N[i].normalize();
 			/*Your implementation ends*/
 		}
 
